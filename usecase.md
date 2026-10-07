@@ -1,5 +1,4 @@
 # Phân tích yêu cầu: Hệ thống thuyết minh bảo tàng đa ngôn ngữ
-**Tác giả:** @Huy | **Ngày cập nhật:** 07/10/2026
 
 ## Tổng quan
 Hệ thống giúp khách tham quan bảo tàng nghe thuyết minh hiện vật bằng ngôn ngữ của mình, chỉ cần quét mã QR đặt cạnh hiện vật. Quản trị viên chỉ nhập nội dung tiếng Việt một lần, hệ thống tự dịch và tạo file âm thanh cho các ngôn ngữ còn lại.
