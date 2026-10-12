@@ -1,0 +1,53 @@
+name: Mobile App CI/CD (Expo EAS)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'mobile/**' # Chỉ chạy khi có thay đổi trong thư mục mobile
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'mobile/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mobile # Trỏ vào thư mục chứa code React Native
+
+    steps:
+      # 1. Tải code từ GitHub
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Cài đặt Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: './mobile/package-lock.json'
+
+      # 3. Cài đặt công cụ Expo và EAS CLI
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }} # Lấy từ tài khoản Expo của bạn
+
+      # 4. Cài đặt thư viện
+      - name: Install dependencies
+        run: npm ci
+
+      # 5. Chạy kiểm tra lỗi code (CI)
+      - name: Run Linter
+        run: npm run lint --if-present
+
+      # 6. Tự động Build APK qua EAS (Continuous Deployment)
+      # Chỉ chạy tiến trình tốn thời gian này khi đẩy code thẳng lên nhánh main
+      - name: EAS Build Android (Preview)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: eas build --platform android --profile preview --non-interactive
