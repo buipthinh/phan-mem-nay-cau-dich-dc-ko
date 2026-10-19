@@ -2,7 +2,7 @@
 
 Đồ án môn Công nghệ phần mềm. Vai trò của nhóm: **FE DEV (React Native + React.js), làm giao diện Web và Mobile, kèm CI/CD.**
 
-Lễ hội ngoài trời "Mùa thu lộng lẫy" có 5 khu, 16 gian hàng (5 ẩm thực, 7 trò chơi, 4 trải nghiệm) và 4 suất diễn mỗi ngày. Khi khách đi vào vùng GPS của một khu, app tự đọc thuyết minh bằng ngôn ngữ khách chọn (Việt, Anh, Trung, Hàn).
+Lễ hội ngoài trời "Mùa thu lộng lẫy" có 5 khu, 16 gian hàng (5 ẩm thực, 7 trò chơi, 4 trải nghiệm) và 4 suất diễn mỗi ngày. Khi khách đi vào vùng GPS của một khu, app tự đọc thuyết minh bằng ngôn ngữ khách chọn (Việt, Anh, Trung, Hàn, Nhật, Đức).
 
 ## Cấu trúc
 
