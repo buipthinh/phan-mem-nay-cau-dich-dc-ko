@@ -1,5 +1,5 @@
 PRD - App thuyết minh tự động đa ngôn ngữ lễ hội Mùa thu lộng lẫy
-Oct 22, 2026 · @HUy
+
 1. Problem Alignment – Vấn đề cần giải quyết
 Lễ hội ngoài trời đông khách nhưng hầu hết thông tin chỉ có bằng tiếng Việt. Ban tổ chức lại không có cách nào cập nhật nhanh cho khách đang đi trong lễ hội.
 1. Khách thiếu thông tin tại chỗ: đứng giữa lễ hội không biết mình đang ở khu nào, khu đó có gì, nhà vệ sinh hay trạm y tế ở đâu.
