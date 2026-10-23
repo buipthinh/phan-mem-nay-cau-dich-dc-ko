@@ -17,7 +17,7 @@ Giải pháp gồm một app điện thoại cho khách và một web quản tr�
 • Ban tổ chức chỉ nhập nội dung tiếng Việt một lần trên web quản trị, bấm "Dịch tự động" rồi duyệt bản dịch trước khi khách thấy.
 • Tự động hoá bằng CI/CD trên GitHub Actions: kiểm tra code mỗi lần push, tự đưa web lên GitHub Pages, build app bằng EAS.
 3. Narrative – Kịch bản sử dụng
-1. Chị Kim, du khách Hàn Quốc, mở app lần đầu. Điện thoại để tiếng Hàn nên app gợi ý sẵn tiếng Hàn; chị bấm xác nhận.
+1. Anh Park, du khách Hàn Quốc, mở app lần đầu. Điện thoại để tiếng Hàn nên app gợi ý sẵn tiếng Hàn; anh bấm xác nhận.
 2. Vừa qua cổng, chị bước vào quảng trường E. App tự đọc lời chào và bố cục lễ hội bằng tiếng Hàn.
 3. Sang khu A, app đọc giới thiệu khu ẩm thực. Chị quét mã QR ở gian F1, thấy bánh trung thu có trứng, gluten và hạt, và nhận tem đầu tiên.
 4. Chị mở Lịch diễn, bấm "Nhắc tôi" cho đêm nhạc rước đèn 19:30. Đúng 19:15 điện thoại báo để chị đi về sân khấu.
