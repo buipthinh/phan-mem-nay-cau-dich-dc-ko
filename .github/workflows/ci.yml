@@ -1,0 +1,41 @@
+# CI: chạy với mọi pull request và mỗi lần push lên main.
+# Pull request chỉ được gộp khi cả 2 job đều xanh (bật "Require status checks" trong Settings > Branches).
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Lint, test, build web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Lint (oxlint)
+        run: npm run lint
+      - name: Kiểm tra format (Prettier)
+        run: npm run format:check
+      - name: Kiểm tra kiểu TypeScript (shared, web, guest)
+        run: npm run typecheck
+      - name: Unit test (Vitest)
+        run: npm test
+      - name: Build web quản trị
+        run: npm run build:web
+      - name: Build trang khách
+        run: npm run build:guest
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web-dist
+          path: apps/web/dist
+          retention-days: 7

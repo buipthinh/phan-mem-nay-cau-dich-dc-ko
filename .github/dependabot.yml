@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    ignore:
+      # React và React DOM phải nâng cùng nhau, làm tay để kiểm tra lại cả web quản trị và trang khách.
+      - dependency-name: 'react'
+      - dependency-name: 'react-dom'

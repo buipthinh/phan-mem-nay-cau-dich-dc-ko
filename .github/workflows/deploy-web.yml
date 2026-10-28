@@ -1,0 +1,58 @@
+# CD web: mỗi lần main thay đổi ở web hoặc phần dùng chung, build và đưa web quản trị (và trang khách ở khach/) lên GitHub Pages.
+# Cần bật một lần: Settings > Pages > Source = "GitHub Actions".
+name: Deploy web
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - apps/web/**
+      - apps/guest/**
+      - packages/shared/**
+      - package-lock.json
+      - .github/workflows/deploy-web.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - name: Build với đường dẫn của GitHub Pages
+        run: npm run build:web
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_TRANSLATE_URL: ${{ vars.VITE_TRANSLATE_URL }}
+      # Trang khách nằm ở thư mục khach/ của cùng trang GitHub Pages (https, nên camera quét QR dùng được).
+      - name: Build trang khách
+        run: npm run build:guest && cp -r apps/guest/dist apps/web/dist/khach
+        env:
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
