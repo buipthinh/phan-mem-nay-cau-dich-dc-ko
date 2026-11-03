@@ -11,7 +11,7 @@
     "typecheck": "tsc -b"
   },
   "devDependencies": {
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.5",
     "@types/react": "~19.2.2",
     "@types/react-dom": "~19.2.2",
     "@vitejs/plugin-basic-ssl": "^2.3.0",
