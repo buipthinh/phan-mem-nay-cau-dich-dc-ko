@@ -1,0 +1,52 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\cap-nhat-diem-thuyet-minh.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:cap-nhat-diem-thuyet-minh.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\MuaThuLongLay.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:MuaThuLongLay.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "cap-nhat-diem-thuyet-minh.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (69))",
+              "DocumentMoniker": "C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\cap-nhat-diem-thuyet-minh.sql",
+              "RelativeDocumentMoniker": "cap-nhat-diem-thuyet-minh.sql",
+              "ToolTip": "C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\cap-nhat-diem-thuyet-minh.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (69))",
+              "RelativeToolTip": "cap-nhat-diem-thuyet-minh.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (69))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-10-29T16:59:33.26Z",
+              "EditorCaption": " - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (69))"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MuaThuLongLay.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (52))",
+              "DocumentMoniker": "C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\MuaThuLongLay.sql",
+              "RelativeDocumentMoniker": "MuaThuLongLay.sql",
+              "ToolTip": "C:\\Users\\admin\\Downloads\\mua-thu-long-lay-diem-thuyet-minh\\mua-thu-long-lay\\database\\MuaThuLongLay.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (52))",
+              "RelativeToolTip": "MuaThuLongLay.sql - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (52))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-10-29T16:56:42.397Z",
+              "EditorCaption": " - localhost.MuaThuLongLay (LAPTOP-3J45K1J2\\admin (52))"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
