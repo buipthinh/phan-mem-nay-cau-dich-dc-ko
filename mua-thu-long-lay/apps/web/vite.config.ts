@@ -9,8 +9,8 @@ const api = { '/api': process.env.API_URL ?? 'http://localhost:3001' };
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
   plugins: [react()],
-  server: { proxy: api },
-  preview: { proxy: api },
+  server: { proxy: api, allowedHosts: ['.trycloudflare.com'] },
+preview: { proxy: api, allowedHosts: ['.trycloudflare.com'] },
   test: {
     environment: 'jsdom',
   },
