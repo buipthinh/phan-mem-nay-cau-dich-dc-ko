@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { stallQrValue, type Stall } from '@mtll/shared';
 import { mediaUrl } from '../lib/api';
@@ -58,8 +58,7 @@ const ICONS = {
  * Lọc, ẩn / hiện, xoá, xem QR, dịch tự động hàng loạt bằng MyMemory.
  */
 export function PointsPage() {
-  const { data, addStall, removeStall, setPublished } = useStore();
-  const navigate = useNavigate();
+  const { data, removeStall, setPublished } = useStore();
   const bulk = useBulkTranslate();
   const points = useMemo(() => listPoints(data), [data]);
 
@@ -68,7 +67,6 @@ export function PointsPage() {
   const [filter, setFilter] = useState<Filter>(draft);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [qrStall, setQrStall] = useState<Stall | null>(null);
-  const [adding, setAdding] = useState(false);
 
   const rows = useMemo(() => {
     const q = filter.q.trim().toLowerCase();
@@ -119,21 +117,11 @@ export function PointsPage() {
           <button className="btn" onClick={() => translateMissing(points)} disabled={bulk.busy}>
             {bulk.progress ? `Đang dịch ${bulk.progress.done}/${bulk.progress.total}…` : 'Dịch tất cả điểm'}
           </button>
-          <button className="btn primary" onClick={() => setAdding((a) => !a)}>
+          <Link className="btn primary" to="/stalls/new">
             + Thêm điểm
-          </button>
+          </Link>
         </div>
       </header>
-
-      {adding && (
-        <AddPoint
-          onCancel={() => setAdding(false)}
-          onAdd={(s) => {
-            addStall(s);
-            navigate(`/stalls/${s.id}`);
-          }}
-        />
-      )}
 
       {bulk.message && (
         <p className={bulk.message.error ? 'error' : 'hint ok-note'} role="status">
@@ -316,53 +304,6 @@ export function PointsPage() {
   );
 }
 
-/** Ô thêm điểm mới: chọn khu, tạo một gian hàng mới trong khu đó rồi mở trang sửa. */
-function AddPoint({ onAdd, onCancel }: { onAdd: (s: Stall) => void; onCancel: () => void }) {
-  const { data } = useStore();
-  const zones = data.zones.filter((z) => z.kind !== 'stage' && z.kind !== 'plaza');
-  const [zoneId, setZoneId] = useState(zones[0]?.id ?? '');
-
-  function create() {
-    const z = data.zones.find((x) => x.id === zoneId);
-    if (!z) return;
-    const prefix = z.kind === 'food' ? 'F' : z.kind === 'game' ? 'G' : 'T';
-    let n = 1;
-    while (data.stalls.some((s) => s.id === `${prefix}${n}`)) n++;
-    const [x, y, w, h] = z.mapRect;
-    onAdd({
-      id: `${prefix}${n}`,
-      zoneId: z.id,
-      kind: z.kind === 'food' ? 'food' : z.kind === 'game' ? 'game' : 'craft',
-      name: { vi: 'Gian hàng mới' },
-      description: { vi: '' },
-      price: { vi: '' },
-      mapPos: [Math.round(x + w / 2), Math.round(y + h / 2)],
-    });
-  }
-
-  return (
-    <section className="card row add-point">
-      <label className="label" htmlFor="add-zone">
-        Thêm gian hàng mới vào khu
-      </label>
-      <select id="add-zone" value={zoneId} onChange={(e) => setZoneId(e.target.value)}>
-        {zones.map((z) => (
-          <option key={z.id} value={z.id}>
-            {z.id} · {z.name.vi}
-          </option>
-        ))}
-      </select>
-      <button className="btn primary" onClick={create}>
-        Tạo
-      </button>
-      <button className="btn" onClick={onCancel}>
-        Huỷ
-      </button>
-      <span className="hint">Các khu đã cố định trên bản đồ nên chỉ thêm được gian hàng.</span>
-    </section>
-  );
-}
-
 /** Hộp xem mã QR của một gian. Khách quét bằng ứng dụng Camera của điện thoại là mở đúng gian. */
 function QrDialog({ stall, onClose }: { stall: Stall; onClose: () => void }) {
   const [guestUrl] = useGuestUrl();
@@ -371,6 +312,7 @@ function QrDialog({ stall, onClose }: { stall: Stall; onClose: () => void }) {
   useEffect(() => {
     QRCode.toDataURL(value, { margin: 1, width: 240 }).then(setSrc, () => setSrc(''));
   }, [value]);
+
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="card modal qr-card" role="dialog" aria-label={`Mã QR gian ${stall.id}`} onClick={(e) => e.stopPropagation()}>

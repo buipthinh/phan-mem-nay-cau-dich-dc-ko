@@ -12,6 +12,7 @@ import { SchedulePage } from './pages/SchedulePage';
 import { StallEditPage } from './pages/StallEditPage';
 import { TranslationsPage } from './pages/TranslationsPage';
 import { ZoneEditPage } from './pages/ZoneEditPage';
+import { StallNewPage } from './pages/StallNewPage';
 
 function Routed() {
   const { email } = useAuth();
@@ -23,6 +24,7 @@ function Routed() {
         <Route index element={<DashboardPage />} /> {/* UC10 */}
         <Route path="points" element={<PointsPage />} /> {/* UC11, UC12: khu và gian hàng gộp chung */}
         <Route path="points/zone/:id" element={<ZoneEditPage />} /> {/* UC11, UC13 */}
+        <Route path="stalls/new" element={<StallNewPage />} /> {/* UC12: thêm gian hàng */}
         <Route path="stalls/:id" element={<StallEditPage />} /> {/* UC12, UC13 */}
         <Route path="translations" element={<TranslationsPage />} /> {/* UC13 */}
         <Route path="glossary" element={<GlossaryPage />} /> {/* UC13 */}

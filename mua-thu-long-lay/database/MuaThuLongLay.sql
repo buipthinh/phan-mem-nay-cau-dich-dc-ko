@@ -1,9 +1,4 @@
-﻿/* =====================================================================
-   CSDL "Mùa thu lộng lẫy" cho SQL Server (mở bằng SSMS, bấm Execute / F5)
-   Dùng chung cho: web quản trị (ban tổ chức) và web mobile (khách quét QR)
-   Chữ tiếng Việt, Trung, Hàn, Nhật -> dùng NVARCHAR và chuỗi có chữ N phía trước.
-   ===================================================================== */
-IF DB_ID(N'MuaThuLongLay') IS NULL CREATE DATABASE MuaThuLongLay;
+﻿IF DB_ID(N'MuaThuLongLay') IS NULL CREATE DATABASE MuaThuLongLay;
 GO
 USE MuaThuLongLay;
 GO
@@ -14,115 +9,108 @@ GO
 
 /* UC01 Chọn ngôn ngữ: các ngôn ngữ khách được chọn trên web khách. */
 CREATE TABLE languages (
-  code      VARCHAR(5)    PRIMARY KEY,          -- vi, en, zh, ko, ja, de
-  name      NVARCHAR(50)  NOT NULL,
-  is_active BIT           NOT NULL DEFAULT 1
+  code VARCHAR(5) PRIMARY KEY, -- vi, en, zh, ko, ja, de
+  name NVARCHAR(50) NOT NULL,
+  is_active BIT NOT NULL DEFAULT 1
 );
 
 /* UC02, UC03, UC11: các khu của lễ hội. Toạ độ GPS + bán kính dùng để biết khách đang ở khu nào
-   và tự đọc thuyết minh; map_x..map_h là vị trí khu trên bản đồ vẽ. */
+và tự đọc thuyết minh; map_x..map_h là vị trí khu trên bản đồ vẽ. */
 CREATE TABLE zones (
-  id         VARCHAR(10)  PRIMARY KEY,           -- A, B, C, D, E
-  kind       VARCHAR(10)  NOT NULL CHECK (kind IN ('food','game','craft','stage','plaza')),
-  center_lat FLOAT        NOT NULL,              -- toạ độ GPS tâm khu
-  center_lng FLOAT        NOT NULL,
-  radius_m   INT          NOT NULL CHECK (radius_m BETWEEN 10 AND 200),
-  map_x INT NOT NULL, map_y INT NOT NULL,        -- hình chữ nhật của khu trên bản đồ 800 x 540
+  id VARCHAR(10) PRIMARY KEY, -- A, B, C, D, E
+  kind VARCHAR(10) NOT NULL CHECK (kind IN ('food','game','craft','stage','plaza')),
+  center_lat FLOAT NOT NULL, -- toạ độ GPS tâm khu
+  center_lng FLOAT NOT NULL,
+  radius_m INT NOT NULL CHECK (radius_m BETWEEN 10 AND 200),
+  map_x INT NOT NULL, map_y INT NOT NULL, -- hình chữ nhật của khu trên bản đồ 800 x 540
   map_w INT NOT NULL, map_h INT NOT NULL,
-  published  BIT          NOT NULL DEFAULT 1     -- 0 = đang ẩn, web khách không thấy khu này
+  published BIT NOT NULL DEFAULT 1 -- 0 = đang ẩn, web khách không thấy khu này
 );
 
 /* UC04, UC05, UC12, UC15: các gian hàng. Mã gian (F1, G3...) cũng là nội dung in trong mã QR. */
 CREATE TABLE stalls (
-  id         VARCHAR(10)  PRIMARY KEY,           -- F1, G3, T2 (mã in trên QR)
-  zone_id    VARCHAR(10)  NOT NULL REFERENCES zones(id),
-  kind       VARCHAR(10)  NOT NULL CHECK (kind IN ('food','game','craft')),
-  map_x      INT          NOT NULL,
-  map_y      INT          NOT NULL,
-  suggested  BIT          NOT NULL DEFAULT 0,    -- gian "nên ghé"
-  image_url  NVARCHAR(500) NULL,
-  published  BIT          NOT NULL DEFAULT 1,    -- 0 = đang ẩn, web khách không thấy gian này
-  created_at DATETIME2    NOT NULL DEFAULT SYSDATETIME()
+  id VARCHAR(10) PRIMARY KEY, -- F1, G3, T2 (mã in trên QR)
+  zone_id VARCHAR(10) NOT NULL REFERENCES zones(id),
+  kind VARCHAR(10) NOT NULL CHECK (kind IN ('food','game','craft')),
+  map_x INT NOT NULL,
+  map_y INT NOT NULL,
+  suggested BIT NOT NULL DEFAULT 0, -- gian "nên ghé"
+  image_url NVARCHAR(500) NULL,
+  published BIT NOT NULL DEFAULT 1, -- 0 = đang ẩn, web khách không thấy gian này
+  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
 );
 
 /* UC06, UC14: lịch diễn, lặp lại mỗi ngày lễ hội. */
 CREATE TABLE shows (
-  id        VARCHAR(10)  PRIMARY KEY,
-  slot      VARCHAR(10)  NOT NULL CHECK (slot IN ('morning','noon','afternoon','evening')),
-  starts_at TIME(0)      NOT NULL,
-  ends_at   TIME(0)      NOT NULL,
+  id VARCHAR(10) PRIMARY KEY,
+  slot VARCHAR(10) NOT NULL CHECK (slot IN ('morning','noon','afternoon','evening')),
+  starts_at TIME(0) NOT NULL,
+  ends_at TIME(0) NOT NULL,
   CONSTRAINT ck_shows_time CHECK (ends_at > starts_at)
 );
 
 /* UC13 Dịch và duyệt bản dịch: một bảng dịch chung cho khu, gian và suất diễn.
-   Một dòng = (loại nội dung, mã, trường, ngôn ngữ) -> chữ + trạng thái.
-   Web khách chỉ đọc bản 'approved' (đã duyệt) và bản tiếng Việt gốc. */
+Một dòng = (loại nội dung, mã, trường, ngôn ngữ) -> chữ + trạng thái.
+Web khách chỉ đọc bản 'approved' (đã duyệt) và bản tiếng Việt gốc. */
 CREATE TABLE translations (
-  entity     VARCHAR(10)   NOT NULL CHECK (entity IN ('zone','stall','show')),
-  entity_id  VARCHAR(10)   NOT NULL,
-  field      VARCHAR(20)   NOT NULL,           -- name, label, description, narration, price, allergens
-  lang       VARCHAR(5)    NOT NULL REFERENCES languages(code),
-  text       NVARCHAR(MAX) NOT NULL,
-  status     VARCHAR(10)   NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','outdated')),
-  updated_at DATETIME2     NOT NULL DEFAULT SYSDATETIME(),
+  entity VARCHAR(10) NOT NULL CHECK (entity IN ('zone','stall','show')),
+  entity_id VARCHAR(10) NOT NULL,
+  field VARCHAR(20) NOT NULL, -- name, label, description, narration, price, allergens
+  lang VARCHAR(5) NOT NULL REFERENCES languages(code),
+  text NVARCHAR(MAX) NOT NULL,
+  status VARCHAR(10) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','outdated')),
+  updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
   CONSTRAINT pk_translations PRIMARY KEY (entity, entity_id, field, lang)
 );
 
 /* UC16 Thông báo khẩn: dòng mới nhất là thông báo đang dùng; active = 1 thì web khách hiện dải thông báo. */
 CREATE TABLE announcements (
-  id         INT IDENTITY(1,1) PRIMARY KEY,
-  text_vi    NVARCHAR(500) NOT NULL,
-  active     BIT           NOT NULL DEFAULT 0,
-  created_at DATETIME2     NOT NULL DEFAULT SYSDATETIME()
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  text_vi NVARCHAR(500) NOT NULL,
+  active BIT NOT NULL DEFAULT 0,
+  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
 );
 
-/* UC10 Tổng quan thống kê. Bảng bắt đầu rỗng (0 lượt), mỗi hành động của khách thêm 1 dòng:
-     - 'visit'      : khách mở web khách. Mỗi máy chỉ có 1 dòng 'visit' cho mỗi ngày, nên đếm số dòng
-                      'visit' theo ngày là ra số người truy cập ngày đó (ngày 1, ngày 2 của lễ hội).
-                      Trang khách báo "còn đang mở" mỗi 20 giây bằng cách cập nhật last_seen_at,
-                      nên máy nào có last_seen_at trong 60 giây gần nhất là đang truy cập.
-     - 'scan'       : khách quét QR một gian (UC04)
-     - 'play'       : khách bấm nghe thuyết minh (UC03)
-     - 'zone_enter' : khách đi vào một khu (UC02, UC03) */
+/* UC10 Tổng quan thống kê. Bảng bắt đầu rỗng (0 lượt), mỗi hành động của khách thêm 1 dòng */
 CREATE TABLE visit_events (
-  id           BIGINT IDENTITY(1,1) PRIMARY KEY,
-  stall_id     VARCHAR(10)  NULL REFERENCES stalls(id),
-  zone_id      VARCHAR(10)  NULL REFERENCES zones(id),
-  lang         VARCHAR(5)   NOT NULL,
-  type         VARCHAR(12)  NOT NULL CHECK (type IN ('visit','scan','play','zone_enter')),
-  device_id    VARCHAR(64)  NOT NULL,            -- mã ngẫu nhiên lưu trong trình duyệt của khách
-  created_at   DATETIME2    NOT NULL DEFAULT SYSDATETIME(),
-  last_seen_at DATETIME2    NULL                 -- chỉ dùng cho dòng 'visit': lần cuối trang khách báo còn mở
+  id BIGINT IDENTITY(1,1) PRIMARY KEY,
+  stall_id VARCHAR(10) NULL REFERENCES stalls(id),
+  zone_id VARCHAR(10) NULL REFERENCES zones(id),
+  lang VARCHAR(5) NOT NULL,
+  type VARCHAR(12) NOT NULL CHECK (type IN ('visit','scan','play','zone_enter')),
+  device_id VARCHAR(64) NOT NULL, -- mã ngẫu nhiên lưu trong trình duyệt của khách
+  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+  last_seen_at DATETIME2 NULL -- chỉ dùng cho dòng 'visit': lần cuối trang khách báo còn mở
 );
 CREATE INDEX ix_visit_time ON visit_events(created_at);
 CREATE INDEX ix_visit_device ON visit_events(type, device_id, created_at);
 
 /* UC09 Đăng nhập: tài khoản ban tổ chức. Mật khẩu lưu dạng băm (bcrypt), KHÔNG lưu mật khẩu thật. */
 CREATE TABLE staff_users (
-  id            INT IDENTITY(1,1) PRIMARY KEY,
-  email         VARCHAR(200)  NOT NULL UNIQUE,
-  password_hash VARCHAR(200)  NOT NULL,
-  full_name     NVARCHAR(100) NOT NULL,
-  role          VARCHAR(10)   NOT NULL DEFAULT 'editor' CHECK (role IN ('admin','editor'))
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  email VARCHAR(200) NOT NULL UNIQUE,
+  password_hash VARCHAR(200) NOT NULL,
+  full_name NVARCHAR(100) NOT NULL,
+  role VARCHAR(10) NOT NULL DEFAULT 'editor' CHECK (role IN ('admin','editor'))
 );
 
 /* Thuật ngữ: từ tiếng Việt luôn được dịch cố định (tên lễ hội, món đặc sản...).
-   Khi dịch tự động bằng MyMemory, API thay các từ này bằng bản dịch cố định trước khi gửi đi. */
+Khi dịch tự động bằng MyMemory, API thay các từ này bằng bản dịch cố định trước khi gửi đi. */
 CREATE TABLE glossary_terms (
-  id         INT IDENTITY(1,1) PRIMARY KEY,
-  term_vi    NVARCHAR(100) NOT NULL UNIQUE,
-  note       NVARCHAR(200) NULL,
-  updated_at DATETIME2     NOT NULL DEFAULT SYSDATETIME()
+  id INT IDENTITY(1,1) PRIMARY KEY,
+  term_vi NVARCHAR(100) NOT NULL UNIQUE,
+  note NVARCHAR(200) NULL,
+  updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
 );
 CREATE TABLE glossary_translations (
-  term_id INT           NOT NULL REFERENCES glossary_terms(id) ON DELETE CASCADE,
-  lang    VARCHAR(5)    NOT NULL REFERENCES languages(code),
-  text    NVARCHAR(200) NOT NULL,
+  term_id INT NOT NULL REFERENCES glossary_terms(id) ON DELETE CASCADE,
+  lang VARCHAR(5) NOT NULL REFERENCES languages(code),
+  text NVARCHAR(200) NOT NULL,
   CONSTRAINT pk_glossary_translations PRIMARY KEY (term_id, lang)
 );
 GO
 
-/* ------------------------- Dữ liệu mẫu ------------------------- */
+/* DỮ LIỆU MẪU */
 INSERT INTO languages (code, name) VALUES
   ('vi', N'Tiếng Việt'), ('en', N'English'), ('zh', N'中文'),
   ('ko', N'한국어'), ('ja', N'日本語'), ('de', N'Deutsch');
@@ -136,23 +124,23 @@ INSERT INTO zones (id, kind, center_lat, center_lng, radius_m, map_x, map_y, map
   (N'E', N'plaza', 10.7746, 106.6927, 30, 330, 140, 140, 250);
 GO
 
-INSERT INTO stalls (id, zone_id, kind, map_x, map_y, suggested) VALUES
-  (N'F1', N'A', N'food', 85, 320, 0),
-  (N'F2', N'A', N'food', 175, 320, 0),
-  (N'F3', N'A', N'food', 265, 320, 0),
-  (N'F4', N'A', N'food', 120, 420, 0),
-  (N'F5', N'A', N'food', 230, 420, 0),
-  (N'G1', N'B', N'game', 540, 290, 0),
-  (N'G2', N'B', N'game', 625, 290, 0),
-  (N'G3', N'B', N'game', 710, 290, 0),
-  (N'G4', N'B', N'game', 540, 365, 0),
-  (N'G5', N'B', N'game', 625, 365, 0),
-  (N'G6', N'B', N'game', 710, 365, 0),
-  (N'G7', N'B', N'game', 625, 435, 0),
-  (N'T1', N'C', N'craft', 85, 110, 1),
-  (N'T2', N'C', N'craft', 175, 110, 1),
-  (N'T3', N'C', N'craft', 265, 110, 1),
-  (N'T4', N'C', N'craft', 175, 195, 1);
+INSERT INTO stalls (id, zone_id, kind, map_x, map_y, suggested, image_url) VALUES
+  (N'F1', N'A', N'food', 85, 320, 0, N'/api/images/f1.jpg'),
+  (N'F2', N'A', N'food', 175, 320, 0, N'/api/images/f2.jpg'),
+  (N'F3', N'A', N'food', 265, 320, 0, N'/api/images/f3.jpg'),
+  (N'F4', N'A', N'food', 120, 420, 0, N'/api/images/f4.jpg'),
+  (N'F5', N'A', N'food', 230, 420, 0, N'/api/images/f5.jpg'),
+  (N'G1', N'B', N'game', 540, 290, 0, N'/api/images/g1.jpg'),
+  (N'G2', N'B', N'game', 625, 290, 0, N'/api/images/g2.jpg'),
+  (N'G3', N'B', N'game', 710, 290, 0, N'/api/images/g3.jpg'),
+  (N'G4', N'B', N'game', 540, 365, 0, N'/api/images/g4.png'),
+  (N'G5', N'B', N'game', 625, 365, 0, N'/api/images/g5.jpg'),
+  (N'G6', N'B', N'game', 710, 365, 0, N'/api/images/g6.png'),
+  (N'G7', N'B', N'game', 625, 435, 0, N'/api/images/g7.jpg'),
+  (N'T1', N'C', N'craft', 85, 110, 1, N'/api/images/t1.jpg'),
+  (N'T2', N'C', N'craft', 175, 110, 1, N'/api/images/t2.jpg'),
+  (N'T3', N'C', N'craft', 265, 110, 1, N'/api/images/t3.jpg'),
+  (N'T4', N'C', N'craft', 175, 195, 1, N'/api/images/t4.jpg');
 GO
 
 INSERT INTO shows (id, slot, starts_at, ends_at) VALUES
@@ -437,8 +425,6 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'show', N'S4', N'description', N'en', N'Acoustic music, ending with a lantern parade around the lake.', N'approved');
 GO
 
-/* Bản dịch tiếng Trung, Hàn, Nhật, Đức cho thuyết minh khu, mô tả / giá / dị ứng của gian và mô tả suất diễn.
-   Chỉ thêm bản còn thiếu, bản đã có (kể cả bản đã sửa trên web quản trị) giữ nguyên. */
 MERGE translations AS t
 USING (VALUES
   (N'zone', N'A', N'narration', N'zh', N'欢迎来到秋香街，这是有5个摊位的美食区。千万别错过绿村的青米片，这是河内秋天的代表味道，还有现场手工制作的月饼。每个摊位都有二维码，扫码即可收听菜品介绍并查看过敏原。'),
@@ -690,8 +676,6 @@ INSERT INTO announcements (text_vi, active) VALUES
   (N'Chương trình biểu diễn tối nay dời sang 19:45 do mưa.', 0);
 GO
 
-/* Tài khoản để API Node đăng nhập SQL Server (khớp DB_USER / DB_PASSWORD trong apps/api/.env).
-   Chỉ được đọc / ghi dữ liệu, không được xoá bảng. */
 USE master;
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'mtll_app')
   CREATE LOGIN mtll_app WITH PASSWORD = 'MuaThu@2026', CHECK_POLICY = OFF, DEFAULT_DATABASE = MuaThuLongLay;

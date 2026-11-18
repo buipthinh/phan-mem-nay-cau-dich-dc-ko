@@ -25,6 +25,9 @@ const UPLOAD_DIR = new URL('../uploads/', import.meta.url);
 mkdirSync(UPLOAD_DIR, { recursive: true });
 app.use('/api/uploads', express.static(fileURLToPath(UPLOAD_DIR), { maxAge: '7d' }));
 
+// Ảnh mẫu của gian hàng (nằm trong git, khác uploads là ảnh tải lên từ trang quản trị).
+app.use('/api/images', express.static(fileURLToPath(new URL('../images/', import.meta.url)), { maxAge: '7d' }));
+
 // Cho phép web (chạy ở cổng khác, ví dụ Vite 5173) gọi API này.
 app.use((req, res, next) => {
   res.set('Access-Control-Allow-Origin', '*');

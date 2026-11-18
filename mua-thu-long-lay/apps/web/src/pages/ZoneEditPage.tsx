@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { speechLocale, type Lang, type Zone } from '@mtll/shared';
 import { FestivalMap } from '../components/FestivalMap';
@@ -27,6 +28,14 @@ export function ZoneEditPage() {
   const openLang = useScrollToTranslation(params);
   const { data, updateZone, setTranslation } = useStore();
   const zone = data.zones.find((z) => z.id === id);
+  const [draft, setDraft] = useState(() => ({
+    name: zone?.name.vi ?? '',
+    narration: zone?.narration.vi ?? '',
+    lat: zone?.center.lat ?? 0,
+    lng: zone?.center.lng ?? 0,
+    radiusM: zone?.radiusM ?? 30,
+  }));
+  const [saved, setSaved] = useState(false);
   if (!zone) {
     return (
       <div className="page">
@@ -36,6 +45,30 @@ export function ZoneEditPage() {
     );
   }
   const key = `zone:${zone.id}`;
+  const dirty =
+    draft.name !== zone.name.vi ||
+    draft.narration !== zone.narration.vi ||
+    draft.lat !== zone.center.lat ||
+    draft.lng !== zone.center.lng ||
+    draft.radiusM !== zone.radiusM;
+  const setField = (field: keyof typeof draft, value: string | number) => {
+    setDraft((d) => ({ ...d, [field]: value }));
+    setSaved(false);
+  };
+  const save = () => {
+    const viChanged = draft.name !== zone.name.vi || draft.narration !== zone.narration.vi;
+    updateZone(
+      {
+        ...zone,
+        name: { ...zone.name, vi: draft.name },
+        narration: { ...zone.narration, vi: draft.narration },
+        center: { lat: draft.lat, lng: draft.lng },
+        radiusM: draft.radiusM,
+      },
+      viChanged,
+    );
+    setSaved(true);
+  };
 
   const setLang = (lang: Exclude<Lang, 'vi'>, changes: Record<string, string>) => {
     const next = { ...zone };
@@ -68,8 +101,8 @@ export function ZoneEditPage() {
           </label>
           <input
             id="z-name"
-            value={zone.name.vi}
-            onChange={(e) => updateZone({ ...zone, name: { ...zone.name, vi: e.target.value } }, true)}
+            value={draft.name}
+            onChange={(e) => setField('name', e.target.value)}
           />
           <label className="label" htmlFor="z-narr">
             Nội dung thuyết minh (tiếng Việt)
@@ -77,8 +110,8 @@ export function ZoneEditPage() {
           <textarea
             id="z-narr"
             rows={6}
-            value={zone.narration.vi}
-            onChange={(e) => updateZone({ ...zone, narration: { ...zone.narration, vi: e.target.value } }, true)}
+            value={draft.narration}
+            onChange={(e) => setField('narration', e.target.value)}
           />
           <div className="grid-3">
             <div>
@@ -89,8 +122,8 @@ export function ZoneEditPage() {
                 id="z-lat"
                 type="number"
                 step="0.00001"
-                value={zone.center.lat}
-                onChange={(e) => updateZone({ ...zone, center: { ...zone.center, lat: Number(e.target.value) } }, false)}
+                value={draft.lat}
+                onChange={(e) => setField('lat', Number(e.target.value))}
               />
             </div>
             <div>
@@ -101,8 +134,8 @@ export function ZoneEditPage() {
                 id="z-lng"
                 type="number"
                 step="0.00001"
-                value={zone.center.lng}
-                onChange={(e) => updateZone({ ...zone, center: { ...zone.center, lng: Number(e.target.value) } }, false)}
+                value={draft.lng}
+                onChange={(e) => setField('lng', Number(e.target.value))}
               />
             </div>
             <div>
@@ -114,12 +147,16 @@ export function ZoneEditPage() {
                 type="number"
                 min={10}
                 max={200}
-                value={zone.radiusM}
-                onChange={(e) => updateZone({ ...zone, radiusM: Number(e.target.value) }, false)}
+                value={draft.radiusM}
+                onChange={(e) => setField('radiusM', Number(e.target.value))}
               />
             </div>
           </div>
           <div className="row">
+            <button className="btn primary" onClick={save} disabled={!dirty || !draft.name.trim()}>
+              Lưu thay đổi
+            </button>
+            {saved && !dirty && <span className="hint">Đã lưu.</span>}
             <button className="btn" onClick={() => preview(zone.narration.vi, 'vi')}>
               Nghe thử tiếng Việt
             </button>

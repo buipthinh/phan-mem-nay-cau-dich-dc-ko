@@ -23,6 +23,14 @@ export function StallEditPage() {
   const [qr, setQr] = useState('');
   const [guestUrl] = useGuestUrl();
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [draft, setDraft] = useState(() => ({
+    name: stall?.name.vi ?? '',
+    description: stall?.description.vi ?? '',
+    price: stall?.price.vi ?? '',
+    allergens: stall?.allergens?.vi ?? '',
+    zoneId: stall?.zoneId ?? '',
+  }));
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     if (stall) QRCode.toDataURL(stallQrValue(stall.id, guestUrl), { margin: 1, width: 240 }).then(setQr, () => setQr(''));
@@ -38,9 +46,34 @@ export function StallEditPage() {
   }
 
   const key = `stall:${stall.id}`;
-  const setVi = (field: TextKey, text: string) => {
-    const current: Localized = stall[field] ?? { vi: '' };
-    updateStall({ ...stall, [field]: { ...current, vi: text } } as Stall, true);
+  const dirty =
+    draft.name !== stall.name.vi ||
+    draft.description !== stall.description.vi ||
+    draft.price !== stall.price.vi ||
+    draft.allergens !== (stall.allergens?.vi ?? '') ||
+    draft.zoneId !== stall.zoneId;
+  const setField = (field: keyof typeof draft, text: string) => {
+    setDraft((d) => ({ ...d, [field]: text }));
+    setSaved(false);
+  };
+  const save = () => {
+    const next: Stall = {
+      ...stall,
+      zoneId: draft.zoneId,
+      name: { ...stall.name, vi: draft.name },
+      description: { ...stall.description, vi: draft.description },
+      price: { ...stall.price, vi: draft.price },
+    };
+    if (draft.allergens.trim() || stall.allergens) {
+      next.allergens = { ...(stall.allergens ?? { vi: '' }), vi: draft.allergens };
+    }
+    const viChanged =
+      draft.name !== stall.name.vi ||
+      draft.description !== stall.description.vi ||
+      draft.price !== stall.price.vi ||
+      draft.allergens !== (stall.allergens?.vi ?? '');
+    updateStall(next, viChanged); // viChanged = true thì các bản dịch chuyển sang "Cần dịch lại"
+    setSaved(true);
   };
   const setLang = (lang: Exclude<Lang, 'vi'>, changes: Record<string, string>) => {
     const next = { ...stall };
@@ -68,17 +101,17 @@ export function StallEditPage() {
           <label className="label" htmlFor="f-name">
             Tên gian hàng
           </label>
-          <input id="f-name" value={stall.name.vi} onChange={(e) => setVi('name', e.target.value)} />
+          <input id="f-name" value={draft.name} onChange={(e) => setField('name', e.target.value) } />
           <label className="label" htmlFor="f-desc">
             Mô tả, nội dung thuyết minh
           </label>
-          <textarea id="f-desc" rows={4} value={stall.description.vi} onChange={(e) => setVi('description', e.target.value)} />
+          <textarea id="f-desc" rows={4} value={draft.description} onChange={(e) => setField('description', e.target.value)} />
           <div className="grid-2">
             <div>
               <label className="label" htmlFor="f-price">
                 Giá
               </label>
-              <input id="f-price" value={stall.price.vi} onChange={(e) => setVi('price', e.target.value)} />
+              <input id="f-price" value={draft.price} onChange={(e) => setField('price', e.target.value)} />
             </div>
             <div>
               <label className="label" htmlFor="f-allergen">
@@ -86,16 +119,16 @@ export function StallEditPage() {
               </label>
               <input
                 id="f-allergen"
-                value={stall.allergens?.vi ?? ''}
+                value={draft.allergens}
                 placeholder="Bỏ trống nếu không phải đồ ăn"
-                onChange={(e) => setVi('allergens', e.target.value)}
+                onChange={(e) => setField('allergens', e.target.value)}
               />
             </div>
           </div>
           <label className="label" htmlFor="f-zone">
             Khu
           </label>
-          <select id="f-zone" value={stall.zoneId} onChange={(e) => updateStall({ ...stall, zoneId: e.target.value }, false)}>
+          <select id="f-zone" value={draft.zoneId} onChange={(e) => setField('zoneId', e.target.value)}>
             {data.zones.map((z) => (
               <option key={z.id} value={z.id}>
                 {z.id} · {z.name.vi}
@@ -103,6 +136,12 @@ export function StallEditPage() {
             ))}
           </select>
           <p className="hint">Sửa bản tiếng Việt sẽ chuyển các bản dịch đã có sang trạng thái "Cần dịch lại".</p>
+          <div className="row">
+            <button className="btn primary" onClick={save} disabled={!dirty || !draft.name.trim()}>
+              Lưu thay đổi
+            </button>
+            {saved && !dirty && <span className="hint">Đã lưu.</span>}
+          </div>
         </section>
 
         <div className="side-stack">

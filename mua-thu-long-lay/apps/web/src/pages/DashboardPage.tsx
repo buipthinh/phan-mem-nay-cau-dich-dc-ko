@@ -61,12 +61,7 @@ export function DashboardPage() {
         <span className="eyebrow">
           {festival.days.map((d) => d.split('-').reverse().join('/')).join(' và ')} · {festival.opens} đến {festival.closes}
         </span>
-        <h1>Tổng quan</h1>
-        <p className="hint">
-          {real
-            ? 'Số liệu thật, đếm từ bảng visit_events trong SQL Server, tự cập nhật mỗi 5 giây.'
-            : 'Chế độ demo không có SQL Server: số lượt quét dưới đây là dữ liệu mẫu.'}
-        </p>
+        <h1>Tổng quan hệ thống</h1>
       </header>
 
       <div className="kpis">
