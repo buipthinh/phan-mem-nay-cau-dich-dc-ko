@@ -1,4 +1,9 @@
-﻿IF DB_ID(N'MuaThuLongLay') IS NULL CREATE DATABASE MuaThuLongLay;
+﻿/* =====================================================================
+   CSDL "Mùa thu lộng lẫy" cho SQL Server (mở bằng SSMS, bấm Execute / F5)
+   Dùng chung cho: web quản trị (ban tổ chức) và web mobile (khách quét QR)
+   Chữ tiếng Việt, Trung, Hàn, Nhật -> dùng NVARCHAR và chuỗi có chữ N phía trước.
+   ===================================================================== */
+IF DB_ID(N'MuaThuLongLay') IS NULL CREATE DATABASE MuaThuLongLay;
 GO
 USE MuaThuLongLay;
 GO
@@ -9,108 +14,115 @@ GO
 
 /* UC01 Chọn ngôn ngữ: các ngôn ngữ khách được chọn trên web khách. */
 CREATE TABLE languages (
-  code VARCHAR(5) PRIMARY KEY, -- vi, en, zh, ko, ja, de
-  name NVARCHAR(50) NOT NULL,
-  is_active BIT NOT NULL DEFAULT 1
+  code      VARCHAR(5)    PRIMARY KEY,          -- vi, en, zh, ko, ja, de
+  name      NVARCHAR(50)  NOT NULL,
+  is_active BIT           NOT NULL DEFAULT 1
 );
 
 /* UC02, UC03, UC11: các khu của lễ hội. Toạ độ GPS + bán kính dùng để biết khách đang ở khu nào
-và tự đọc thuyết minh; map_x..map_h là vị trí khu trên bản đồ vẽ. */
+   và tự đọc thuyết minh; map_x..map_h là vị trí khu trên bản đồ vẽ. */
 CREATE TABLE zones (
-  id VARCHAR(10) PRIMARY KEY, -- A, B, C, D, E
-  kind VARCHAR(10) NOT NULL CHECK (kind IN ('food','game','craft','stage','plaza')),
-  center_lat FLOAT NOT NULL, -- toạ độ GPS tâm khu
-  center_lng FLOAT NOT NULL,
-  radius_m INT NOT NULL CHECK (radius_m BETWEEN 10 AND 200),
-  map_x INT NOT NULL, map_y INT NOT NULL, -- hình chữ nhật của khu trên bản đồ 800 x 540
+  id         VARCHAR(10)  PRIMARY KEY,           -- A, B, C, D, E
+  kind       VARCHAR(10)  NOT NULL CHECK (kind IN ('food','game','craft','stage','plaza')),
+  center_lat FLOAT        NOT NULL,              -- toạ độ GPS tâm khu
+  center_lng FLOAT        NOT NULL,
+  radius_m   INT          NOT NULL CHECK (radius_m BETWEEN 10 AND 200),
+  map_x INT NOT NULL, map_y INT NOT NULL,        -- hình chữ nhật của khu trên bản đồ 800 x 540
   map_w INT NOT NULL, map_h INT NOT NULL,
-  published BIT NOT NULL DEFAULT 1 -- 0 = đang ẩn, web khách không thấy khu này
+  published  BIT          NOT NULL DEFAULT 1     -- 0 = đang ẩn, web khách không thấy khu này
 );
 
 /* UC04, UC05, UC12, UC15: các gian hàng. Mã gian (F1, G3...) cũng là nội dung in trong mã QR. */
 CREATE TABLE stalls (
-  id VARCHAR(10) PRIMARY KEY, -- F1, G3, T2 (mã in trên QR)
-  zone_id VARCHAR(10) NOT NULL REFERENCES zones(id),
-  kind VARCHAR(10) NOT NULL CHECK (kind IN ('food','game','craft')),
-  map_x INT NOT NULL,
-  map_y INT NOT NULL,
-  suggested BIT NOT NULL DEFAULT 0, -- gian "nên ghé"
-  image_url NVARCHAR(500) NULL,
-  published BIT NOT NULL DEFAULT 1, -- 0 = đang ẩn, web khách không thấy gian này
-  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+  id         VARCHAR(10)  PRIMARY KEY,           -- F1, G3, T2 (mã in trên QR)
+  zone_id    VARCHAR(10)  NOT NULL REFERENCES zones(id),
+  kind       VARCHAR(10)  NOT NULL CHECK (kind IN ('food','game','craft')),
+  map_x      INT          NOT NULL,
+  map_y      INT          NOT NULL,
+  suggested  BIT          NOT NULL DEFAULT 0,    -- gian "nên ghé"
+  image_url  NVARCHAR(500) NULL,
+  published  BIT          NOT NULL DEFAULT 1,    -- 0 = đang ẩn, web khách không thấy gian này
+  created_at DATETIME2    NOT NULL DEFAULT SYSDATETIME()
 );
 
 /* UC06, UC14: lịch diễn, lặp lại mỗi ngày lễ hội. */
 CREATE TABLE shows (
-  id VARCHAR(10) PRIMARY KEY,
-  slot VARCHAR(10) NOT NULL CHECK (slot IN ('morning','noon','afternoon','evening')),
-  starts_at TIME(0) NOT NULL,
-  ends_at TIME(0) NOT NULL,
+  id        VARCHAR(10)  PRIMARY KEY,
+  slot      VARCHAR(10)  NOT NULL CHECK (slot IN ('morning','noon','afternoon','evening')),
+  starts_at TIME(0)      NOT NULL,
+  ends_at   TIME(0)      NOT NULL,
   CONSTRAINT ck_shows_time CHECK (ends_at > starts_at)
 );
 
 /* UC13 Dịch và duyệt bản dịch: một bảng dịch chung cho khu, gian và suất diễn.
-Một dòng = (loại nội dung, mã, trường, ngôn ngữ) -> chữ + trạng thái.
-Web khách chỉ đọc bản 'approved' (đã duyệt) và bản tiếng Việt gốc. */
+   Một dòng = (loại nội dung, mã, trường, ngôn ngữ) -> chữ + trạng thái.
+   Web khách chỉ đọc bản 'approved' (đã duyệt) và bản tiếng Việt gốc. */
 CREATE TABLE translations (
-  entity VARCHAR(10) NOT NULL CHECK (entity IN ('zone','stall','show')),
-  entity_id VARCHAR(10) NOT NULL,
-  field VARCHAR(20) NOT NULL, -- name, label, description, narration, price, allergens
-  lang VARCHAR(5) NOT NULL REFERENCES languages(code),
-  text NVARCHAR(MAX) NOT NULL,
-  status VARCHAR(10) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','outdated')),
-  updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
+  entity     VARCHAR(10)   NOT NULL CHECK (entity IN ('zone','stall','show')),
+  entity_id  VARCHAR(10)   NOT NULL,
+  field      VARCHAR(20)   NOT NULL,           -- name, label, description, narration, price, allergens
+  lang       VARCHAR(5)    NOT NULL REFERENCES languages(code),
+  text       NVARCHAR(MAX) NOT NULL,
+  status     VARCHAR(10)   NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','approved','outdated')),
+  updated_at DATETIME2     NOT NULL DEFAULT SYSDATETIME(),
   CONSTRAINT pk_translations PRIMARY KEY (entity, entity_id, field, lang)
 );
 
 /* UC16 Thông báo khẩn: dòng mới nhất là thông báo đang dùng; active = 1 thì web khách hiện dải thông báo. */
 CREATE TABLE announcements (
-  id INT IDENTITY(1,1) PRIMARY KEY,
-  text_vi NVARCHAR(500) NOT NULL,
-  active BIT NOT NULL DEFAULT 0,
-  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+  id         INT IDENTITY(1,1) PRIMARY KEY,
+  text_vi    NVARCHAR(500) NOT NULL,
+  active     BIT           NOT NULL DEFAULT 0,
+  created_at DATETIME2     NOT NULL DEFAULT SYSDATETIME()
 );
 
-/* UC10 Tổng quan thống kê. Bảng bắt đầu rỗng (0 lượt), mỗi hành động của khách thêm 1 dòng */
+/* UC10 Tổng quan thống kê. Bảng bắt đầu rỗng (0 lượt), mỗi hành động của khách thêm 1 dòng:
+     - 'visit'      : khách mở web khách. Mỗi máy chỉ có 1 dòng 'visit' cho mỗi ngày, nên đếm số dòng
+                      'visit' theo ngày là ra số người truy cập ngày đó (ngày 1, ngày 2 của lễ hội).
+                      Trang khách báo "còn đang mở" mỗi 20 giây bằng cách cập nhật last_seen_at,
+                      nên máy nào có last_seen_at trong 60 giây gần nhất là đang truy cập.
+     - 'scan'       : khách quét QR một gian (UC04)
+     - 'play'       : khách bấm nghe thuyết minh (UC03)
+     - 'zone_enter' : khách đi vào một khu (UC02, UC03) */
 CREATE TABLE visit_events (
-  id BIGINT IDENTITY(1,1) PRIMARY KEY,
-  stall_id VARCHAR(10) NULL REFERENCES stalls(id),
-  zone_id VARCHAR(10) NULL REFERENCES zones(id),
-  lang VARCHAR(5) NOT NULL,
-  type VARCHAR(12) NOT NULL CHECK (type IN ('visit','scan','play','zone_enter')),
-  device_id VARCHAR(64) NOT NULL, -- mã ngẫu nhiên lưu trong trình duyệt của khách
-  created_at DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
-  last_seen_at DATETIME2 NULL -- chỉ dùng cho dòng 'visit': lần cuối trang khách báo còn mở
+  id           BIGINT IDENTITY(1,1) PRIMARY KEY,
+  stall_id     VARCHAR(10)  NULL REFERENCES stalls(id),
+  zone_id      VARCHAR(10)  NULL REFERENCES zones(id),
+  lang         VARCHAR(5)   NOT NULL,
+  type         VARCHAR(12)  NOT NULL CHECK (type IN ('visit','scan','play','zone_enter')),
+  device_id    VARCHAR(64)  NOT NULL,            -- mã ngẫu nhiên lưu trong trình duyệt của khách
+  created_at   DATETIME2    NOT NULL DEFAULT SYSDATETIME(),
+  last_seen_at DATETIME2    NULL                 -- chỉ dùng cho dòng 'visit': lần cuối trang khách báo còn mở
 );
 CREATE INDEX ix_visit_time ON visit_events(created_at);
 CREATE INDEX ix_visit_device ON visit_events(type, device_id, created_at);
 
 /* UC09 Đăng nhập: tài khoản ban tổ chức. Mật khẩu lưu dạng băm (bcrypt), KHÔNG lưu mật khẩu thật. */
 CREATE TABLE staff_users (
-  id INT IDENTITY(1,1) PRIMARY KEY,
-  email VARCHAR(200) NOT NULL UNIQUE,
-  password_hash VARCHAR(200) NOT NULL,
-  full_name NVARCHAR(100) NOT NULL,
-  role VARCHAR(10) NOT NULL DEFAULT 'editor' CHECK (role IN ('admin','editor'))
+  id            INT IDENTITY(1,1) PRIMARY KEY,
+  email         VARCHAR(200)  NOT NULL UNIQUE,
+  password_hash VARCHAR(200)  NOT NULL,
+  full_name     NVARCHAR(100) NOT NULL,
+  role          VARCHAR(10)   NOT NULL DEFAULT 'editor' CHECK (role IN ('admin','editor'))
 );
 
 /* Thuật ngữ: từ tiếng Việt luôn được dịch cố định (tên lễ hội, món đặc sản...).
-Khi dịch tự động bằng MyMemory, API thay các từ này bằng bản dịch cố định trước khi gửi đi. */
+   Khi dịch tự động bằng MyMemory, API thay các từ này bằng bản dịch cố định trước khi gửi đi. */
 CREATE TABLE glossary_terms (
-  id INT IDENTITY(1,1) PRIMARY KEY,
-  term_vi NVARCHAR(100) NOT NULL UNIQUE,
-  note NVARCHAR(200) NULL,
-  updated_at DATETIME2 NOT NULL DEFAULT SYSDATETIME()
+  id         INT IDENTITY(1,1) PRIMARY KEY,
+  term_vi    NVARCHAR(100) NOT NULL UNIQUE,
+  note       NVARCHAR(200) NULL,
+  updated_at DATETIME2     NOT NULL DEFAULT SYSDATETIME()
 );
 CREATE TABLE glossary_translations (
-  term_id INT NOT NULL REFERENCES glossary_terms(id) ON DELETE CASCADE,
-  lang VARCHAR(5) NOT NULL REFERENCES languages(code),
-  text NVARCHAR(200) NOT NULL,
+  term_id INT           NOT NULL REFERENCES glossary_terms(id) ON DELETE CASCADE,
+  lang    VARCHAR(5)    NOT NULL REFERENCES languages(code),
+  text    NVARCHAR(200) NOT NULL,
   CONSTRAINT pk_glossary_translations PRIMARY KEY (term_id, lang)
 );
 GO
 
-/* DỮ LIỆU MẪU */
+/* ------------------------- Dữ liệu mẫu ------------------------- */
 INSERT INTO languages (code, name) VALUES
   ('vi', N'Tiếng Việt'), ('en', N'English'), ('zh', N'中文'),
   ('ko', N'한국어'), ('ja', N'日本語'), ('de', N'Deutsch');
@@ -124,23 +136,23 @@ INSERT INTO zones (id, kind, center_lat, center_lng, radius_m, map_x, map_y, map
   (N'E', N'plaza', 10.7746, 106.6927, 30, 330, 140, 140, 250);
 GO
 
-INSERT INTO stalls (id, zone_id, kind, map_x, map_y, suggested, image_url) VALUES
-  (N'F1', N'A', N'food', 85, 320, 0, N'/api/images/f1.jpg'),
-  (N'F2', N'A', N'food', 175, 320, 0, N'/api/images/f2.jpg'),
-  (N'F3', N'A', N'food', 265, 320, 0, N'/api/images/f3.jpg'),
-  (N'F4', N'A', N'food', 120, 420, 0, N'/api/images/f4.jpg'),
-  (N'F5', N'A', N'food', 230, 420, 0, N'/api/images/f5.jpg'),
-  (N'G1', N'B', N'game', 540, 290, 0, N'/api/images/g1.jpg'),
-  (N'G2', N'B', N'game', 625, 290, 0, N'/api/images/g2.jpg'),
-  (N'G3', N'B', N'game', 710, 290, 0, N'/api/images/g3.jpg'),
-  (N'G4', N'B', N'game', 540, 365, 0, N'/api/images/g4.png'),
-  (N'G5', N'B', N'game', 625, 365, 0, N'/api/images/g5.jpg'),
-  (N'G6', N'B', N'game', 710, 365, 0, N'/api/images/g6.png'),
-  (N'G7', N'B', N'game', 625, 435, 0, N'/api/images/g7.jpg'),
-  (N'T1', N'C', N'craft', 85, 110, 1, N'/api/images/t1.jpg'),
-  (N'T2', N'C', N'craft', 175, 110, 1, N'/api/images/t2.jpg'),
-  (N'T3', N'C', N'craft', 265, 110, 1, N'/api/images/t3.jpg'),
-  (N'T4', N'C', N'craft', 175, 195, 1, N'/api/images/t4.jpg');
+INSERT INTO stalls (id, zone_id, kind, map_x, map_y, suggested) VALUES
+  (N'F1', N'A', N'food', 85, 320, 0),
+  (N'F2', N'A', N'food', 175, 320, 0),
+  (N'F3', N'A', N'food', 265, 320, 0),
+  (N'F4', N'A', N'food', 120, 420, 0),
+  (N'F5', N'A', N'food', 230, 420, 0),
+  (N'G1', N'B', N'game', 540, 290, 0),
+  (N'G2', N'B', N'game', 625, 290, 0),
+  (N'G3', N'B', N'game', 710, 290, 0),
+  (N'G4', N'B', N'game', 540, 365, 0),
+  (N'G5', N'B', N'game', 625, 365, 0),
+  (N'G6', N'B', N'game', 710, 365, 0),
+  (N'G7', N'B', N'game', 625, 435, 0),
+  (N'T1', N'C', N'craft', 85, 110, 1),
+  (N'T2', N'C', N'craft', 175, 110, 1),
+  (N'T3', N'C', N'craft', 265, 110, 1),
+  (N'T4', N'C', N'craft', 175, 195, 1);
 GO
 
 INSERT INTO shows (id, slot, starts_at, ends_at) VALUES
@@ -221,26 +233,26 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'zone', N'E', N'label', N'de', N'Platz', N'approved'),
   (N'zone', N'E', N'narration', N'vi', N'Chào mừng bạn đến lễ hội Mùa thu lộng lẫy. Đây là quảng trường trung tâm, bên trái là khu ẩm thực và xưởng trải nghiệm, bên phải là sân khấu và sân chơi. Điểm thông tin và trạm y tế nằm gần cổng chính.', N'approved'),
   (N'zone', N'E', N'narration', N'en', N'Welcome to the Splendid Autumn festival. This is the central square: food and workshops are on your left, the stage and playground on your right. The information desk and first aid point are near the main gate.', N'approved'),
-  (N'stall', N'F1', N'name', N'vi', N'Bánh trung thu thủ công', N'approved'),
+    (N'stall', N'F1', N'name', N'vi', N'Bánh trung thu thủ công', N'approved'),
   (N'stall', N'F1', N'name', N'en', N'Handmade mooncakes', N'approved'),
   (N'stall', N'F1', N'name', N'zh', N'手工月饼', N'approved'),
   (N'stall', N'F1', N'name', N'ko', N'수제 월병', N'approved'),
   (N'stall', N'F1', N'name', N'ja', N'手作り月餅', N'approved'),
   (N'stall', N'F1', N'name', N'de', N'Handgemachte Mondkuchen', N'approved'),
-  (N'stall', N'F1', N'description', N'vi', N'Bánh nướng, bánh dẻo nhân sen, đậu xanh, thập cẩm, làm tại chỗ.', N'approved'),
-  (N'stall', N'F1', N'description', N'en', N'Baked and snowskin mooncakes with lotus, mung bean or mixed nuts, made on site.', N'approved'),
+  (N'stall', N'F1', N'description', N'vi', N'Bánh trung thu ở gian này được làm thủ công ngay tại chỗ theo công thức truyền thống, gồm hai loại là bánh nướng và bánh dẻo. Vỏ bánh nướng làm từ bột mì, nước đường thắng sẵn, dầu ăn và một chút nước tro, sau đó phết lòng đỏ trứng và nướng hai lần để có màu vàng nâu bóng đẹp. Vỏ bánh dẻo làm từ bột nếp rang trộn với nước đường và nước hoa bưởi, không cần nướng nên ăn mềm, dẻo và thơm mát. Nhân bánh có ba vị: hạt sen sên đường bùi ngọt, đậu xanh xay nhuyễn mịn, và thập cẩm gồm hạt điều, hạt dưa, mè, lạp xưởng, mứt bí và lá chanh thái sợi. Mỗi chiếc bánh được nặn tay rồi ép khuôn gỗ ngay trước mặt bạn, nên bạn có thể đứng xem từng công đoạn. Bánh nướng ngon nhất khi để thêm một đến hai ngày cho vỏ mềm lại và ngấm dầu.', N'approved'),
+  (N'stall', N'F1', N'description', N'en', N'These mooncakes are handmade on site using a traditional recipe, in two styles: baked and snowskin. The baked crust is made from wheat flour, aged sugar syrup, oil and a little lye water, then brushed with egg yolk and baked twice for a glossy golden brown finish. The snowskin crust is made from roasted glutinous rice flour mixed with syrup and grapefruit flower water, so it is never baked and stays soft, chewy and fragrant. There are three fillings: sweet lotus seed paste, smooth mung bean, and a mixed filling of cashews, melon seeds, sesame, Chinese sausage, candied winter melon and shredded lime leaves. Each cake is shaped by hand and pressed in a wooden mould right in front of you, so you can watch every step. Baked mooncakes taste best after resting for one or two days, when the crust softens and turns slightly oily.', N'approved'),
   (N'stall', N'F1', N'price', N'vi', N'35.000–60.000đ', N'approved'),
   (N'stall', N'F1', N'price', N'en', N'35,000–60,000 VND', N'approved'),
-  (N'stall', N'F1', N'allergens', N'vi', N'trứng, gluten, các loại hạt', N'approved'),
-  (N'stall', N'F1', N'allergens', N'en', N'egg, gluten, nuts', N'approved'),
+  (N'stall', N'F1', N'allergens', N'vi', N'trứng, gluten, các loại hạt, mè', N'approved'),
+  (N'stall', N'F1', N'allergens', N'en', N'egg, gluten, nuts, sesame', N'approved'),
   (N'stall', N'F2', N'name', N'vi', N'Cốm làng Vòng', N'approved'),
   (N'stall', N'F2', N'name', N'en', N'Vong village green rice', N'approved'),
   (N'stall', N'F2', N'name', N'zh', N'冯村青米片', N'approved'),
   (N'stall', N'F2', N'name', N'ko', N'봉 마을 풋쌀', N'approved'),
   (N'stall', N'F2', N'name', N'ja', N'ヴォン村の青米', N'approved'),
   (N'stall', N'F2', N'name', N'de', N'Grüner Reis aus dem Dorf Vong', N'approved'),
-  (N'stall', N'F2', N'description', N'vi', N'Cốm tươi gói lá sen, chè cốm, xôi cốm.', N'approved'),
-  (N'stall', N'F2', N'description', N'en', N'Fresh green rice flakes in lotus leaves, sweet soup and sticky rice.', N'approved'),
+  (N'stall', N'F2', N'description', N'vi', N'Cốm ở gian này được mang về từ làng Vòng, Hà Nội, nơi làm cốm nổi tiếng nhất mỗi độ thu sang. Nguyên liệu là lúa nếp cái hoa vàng gặt khi hạt còn non và đang chắc sữa, nên cốm có màu xanh tự nhiên và mùi thơm rất riêng. Thóc được rang trên chảo gang, giã bằng chày trong cối đá rồi sàng sảy nhiều lượt, lặp lại cho đến khi hạt cốm dẹt, mỏng và dẻo. Cốm tươi được gói trong lá sen để giữ ẩm và thêm hương sen, bạn có thể ăn ngay từng nhúm nhỏ. Chè cốm được nấu từ cốm, đường và bột sắn dây cho sánh mịn, rồi thêm vài giọt nước hoa bưởi cho thơm. Xôi cốm đồ chung với đậu xanh đánh nhuyễn, dẻo thơm, ăn kèm chuối tiêu hoặc hồng chín là ngon nhất.', N'approved'),
+  (N'stall', N'F2', N'description', N'en', N'These green rice flakes come from Vong village in Hanoi, the most famous place for com every autumn. They are made from young yellow flower glutinous rice, harvested while the grains are still milky, which gives com its natural green colour and unique fragrance. The grains are roasted in a cast iron pan, pounded in a stone mortar and winnowed again and again until the flakes are flat, thin and soft. Fresh com is wrapped in lotus leaves to keep it moist and add a light lotus scent, and you can eat it straight away, a pinch at a time. Com sweet soup is cooked with sugar and arrowroot starch until smooth, then finished with a few drops of grapefruit flower water. Com sticky rice is steamed with mashed mung beans and tastes best with ripe bananas or persimmons.', N'approved'),
   (N'stall', N'F2', N'price', N'vi', N'30.000–50.000đ', N'approved'),
   (N'stall', N'F2', N'price', N'en', N'30,000–50,000 VND', N'approved'),
   (N'stall', N'F2', N'allergens', N'vi', N'không có', N'approved'),
@@ -251,32 +263,32 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'F3', N'name', N'ko', N'메콩 반쎄오', N'approved'),
   (N'stall', N'F3', N'name', N'ja', N'メコン風バインセオ', N'approved'),
   (N'stall', N'F3', N'name', N'de', N'Mekong-Pfannkuchen', N'approved'),
-  (N'stall', N'F3', N'description', N'vi', N'Vỏ giòn nghệ, nhân tôm thịt, ăn kèm rau rừng.', N'approved'),
-  (N'stall', N'F3', N'description', N'en', N'Crispy turmeric crepes with shrimp and pork, served with wild greens.', N'approved'),
+  (N'stall', N'F3', N'description', N'vi', N'Bánh xèo miền Tây ở đây được đổ to bằng cả mặt chảo, vỏ mỏng, giòn rụm và vàng ươm. Bột bánh pha từ bột gạo xay, nước cốt dừa, bột nghệ và hành lá cắt nhỏ, để nghỉ vài tiếng cho bột ngấm đều. Nhân bánh gồm tôm tươi, thịt ba chỉ thái mỏng, giá đỗ và củ sắn thái sợi, được xào sơ trước khi cho vào bánh. Khi chảo gang thật nóng, đầu bếp tráng một lớp dầu, rót bột rồi láng thật mỏng, tiếng xèo vang lên chính là nguồn gốc tên gọi của món ăn. Bánh được đậy nắp cho chín nhân, sau đó mở ra để vỏ giòn hẳn rồi gập đôi bày ra đĩa. Bạn cuốn bánh với cải bẹ xanh, lá cách, đọt xoài cùng các loại rau rừng, rồi chấm nước mắm chua ngọt pha tỏi ớt.', N'approved'),
+  (N'stall', N'F3', N'description', N'en', N'These Mekong Delta style crepes are as wide as the whole pan, with a thin, crispy, golden shell. The batter is made from ground rice flour, coconut milk, turmeric and chopped spring onions, and rests for a few hours before cooking. The filling is fresh shrimp, thinly sliced pork belly, bean sprouts and shredded jicama, lightly stir fried before it goes in. When the cast iron pan is very hot, the cook oils it, pours in the batter and swirls it thin, and the sizzling sound, xeo, is where the dish gets its name. The crepe is covered so the filling cooks through, then uncovered so the shell turns crisp, and finally folded in half onto the plate. Wrap it in mustard greens, wild leaves and young mango shoots, then dip it in sweet and sour fish sauce with garlic and chilli.', N'approved'),
   (N'stall', N'F3', N'price', N'vi', N'45.000–70.000đ', N'approved'),
   (N'stall', N'F3', N'price', N'en', N'45,000–70,000 VND', N'approved'),
-  (N'stall', N'F3', N'allergens', N'vi', N'tôm', N'approved'),
-  (N'stall', N'F3', N'allergens', N'en', N'shrimp', N'approved'),
+  (N'stall', N'F3', N'allergens', N'vi', N'tôm, cá (nước mắm), dừa', N'approved'),
+  (N'stall', N'F3', N'allergens', N'en', N'shrimp, fish (fish sauce), coconut', N'approved'),
   (N'stall', N'F4', N'name', N'vi', N'Xiên nướng phố đêm', N'approved'),
   (N'stall', N'F4', N'name', N'en', N'Night-market skewers', N'approved'),
   (N'stall', N'F4', N'name', N'zh', N'夜市烤串', N'approved'),
   (N'stall', N'F4', N'name', N'ko', N'야시장 꼬치', N'approved'),
   (N'stall', N'F4', N'name', N'ja', N'夜市の串焼き', N'approved'),
   (N'stall', N'F4', N'name', N'de', N'Spieße vom Nachtmarkt', N'approved'),
-  (N'stall', N'F4', N'description', N'vi', N'Xiên thịt, rau củ và hải sản nướng than, sốt sa tế.', N'approved'),
-  (N'stall', N'F4', N'description', N'en', N'Charcoal-grilled meat, vegetable and seafood skewers with chilli sauce.', N'approved'),
+  (N'stall', N'F4', N'description', N'vi', N'Gian xiên nướng mang không khí phố đêm Sài Gòn với bếp than hoa đỏ lửa suốt từ chiều đến tối. Thịt heo, thịt bò và thịt gà được cắt miếng vừa ăn, ướp ít nhất hai tiếng với sả, tỏi, mật ong, dầu hào và nước tương. Xiên hải sản có tôm và mực, còn xiên rau củ gồm ớt chuông, hành tây, nấm đùi gà và bắp ngọt cho ai thích ăn nhẹ. Các xiên được nướng trên than hoa, trở đều tay và phết thêm nước ướp để thịt mềm, không bị khô. Khi gần chín, đầu bếp quét một lớp sa tế tự làm từ ớt, sả và tỏi phi để tăng vị cay thơm. Bạn có thể chọn từng xiên hoặc mua phần combo, ăn kèm dưa leo, rau thơm và muối ớt chanh.', N'approved'),
+  (N'stall', N'F4', N'description', N'en', N'This stall brings the feel of a Saigon night market, with charcoal grills glowing from afternoon until late. Pork, beef and chicken are cut into bite size pieces and marinated for at least two hours with lemongrass, garlic, honey, oyster sauce and soy sauce. Seafood skewers have shrimp and squid, while vegetable skewers carry bell peppers, onions, king oyster mushrooms and sweet corn for a lighter bite. The skewers are grilled over charcoal, turned often and brushed with more marinade so the meat stays tender and juicy. Near the end, the cook brushes on a homemade satay of chilli, lemongrass and fried garlic for a spicy, fragrant kick. You can pick single skewers or a combo, served with cucumber, fresh herbs and chilli lime salt.', N'approved'),
   (N'stall', N'F4', N'price', N'vi', N'25.000–60.000đ', N'approved'),
   (N'stall', N'F4', N'price', N'en', N'25,000–60,000 VND', N'approved'),
-  (N'stall', N'F4', N'allergens', N'vi', N'đậu nành, hải sản', N'approved'),
-  (N'stall', N'F4', N'allergens', N'en', N'soy, seafood', N'approved'),
+  (N'stall', N'F4', N'allergens', N'vi', N'đậu nành, gluten, hải sản (tôm, mực, dầu hào)', N'approved'),
+  (N'stall', N'F4', N'allergens', N'en', N'soy, gluten, seafood (shrimp, squid, oyster sauce)', N'approved'),
   (N'stall', N'F5', N'name', N'vi', N'Quầy trà Lá Phong', N'approved'),
   (N'stall', N'F5', N'name', N'en', N'Maple Leaf tea bar', N'approved'),
   (N'stall', N'F5', N'name', N'zh', N'枫叶茶吧', N'approved'),
   (N'stall', N'F5', N'name', N'ko', N'단풍잎 찻집', N'approved'),
   (N'stall', N'F5', N'name', N'ja', N'もみじティーバー', N'approved'),
   (N'stall', N'F5', N'name', N'de', N'Ahornblatt-Teebar', N'approved'),
-  (N'stall', N'F5', N'description', N'vi', N'Trà sen, cà phê trứng, sữa ngô nóng.', N'approved'),
-  (N'stall', N'F5', N'description', N'en', N'Lotus tea, egg coffee and hot corn milk.', N'approved'),
+  (N'stall', N'F5', N'description', N'vi', N'Quầy trà Lá Phong phục vụ ba thức uống ấm áp đặc trưng của mùa thu Hà Nội. Trà sen được ướp từ trà xanh Thái Nguyên với gạo sen lấy từ những bông sen Hồ Tây, nên nước trà xanh trong và thơm dịu. Cà phê trứng làm từ lòng đỏ trứng gà đánh bông với đường và sữa đặc thành lớp kem mịn, rồi rót lên trên cà phê phin đậm đặc. Ly cà phê trứng được đặt trong bát nước nóng để giữ ấm, bạn nên khuấy nhẹ cho kem hòa với cà phê trước khi uống. Sữa ngô nóng làm từ ngô nếp tươi xay nhuyễn, lọc lấy nước rồi nấu cùng sữa tươi và một chút đường cho béo ngọt. Mọi đồ uống đều được pha theo từng ly khi bạn gọi, và quầy có thể giảm ngọt nếu bạn yêu cầu.', N'approved'),
+  (N'stall', N'F5', N'description', N'en', N'The Maple Leaf tea bar serves three warm drinks that are typical of autumn in Hanoi. Lotus tea is Thai Nguyen green tea scented with lotus stamens from the flowers of West Lake, giving a clear green tea with a gentle fragrance. Egg coffee is made by whisking egg yolks with sugar and condensed milk into a smooth cream, which is poured over strong drip coffee. The cup sits in a bowl of hot water to stay warm, so stir it gently to blend the cream into the coffee before you drink. Hot corn milk is made from fresh sticky corn, blended, strained and simmered with fresh milk and a little sugar for a rich, sweet taste. Every drink is made to order, and you can ask for less sugar.', N'approved'),
   (N'stall', N'F5', N'price', N'vi', N'25.000–45.000đ', N'approved'),
   (N'stall', N'F5', N'price', N'en', N'25,000–45,000 VND', N'approved'),
   (N'stall', N'F5', N'allergens', N'vi', N'trứng, sữa', N'approved'),
@@ -287,8 +299,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G1', N'name', N'ko', N'고리 던지기', N'approved'),
   (N'stall', N'G1', N'name', N'ja', N'輪投げ', N'approved'),
   (N'stall', N'G1', N'name', N'de', N'Ringwerfen', N'approved'),
-  (N'stall', N'G1', N'description', N'vi', N'Ném vòng trúng cổ chai để nhận quà.', N'approved'),
-  (N'stall', N'G1', N'description', N'en', N'Land a ring on a bottle neck to win a prize.', N'approved'),
+  (N'stall', N'G1', N'description', N'vi', N'Ném vòng cổ chai là trò chơi khéo tay quen thuộc ở các hội chợ, ai cũng chơi được, từ trẻ nhỏ đến người lớn. Mỗi lượt 20.000 đồng, bạn nhận 5 chiếc vòng mây và đứng sau vạch kẻ cách hàng chai khoảng 2 mét. Bạn ném lần lượt từng vòng, vòng phải lọt hẳn qua cổ chai và nằm yên quanh thân chai mới được tính. Chai ở hàng gần có quà nhỏ như kẹo và móc khóa, còn chai ở hàng xa hoặc chai buộc nơ vàng có quà lớn hơn. Mẹo nhỏ là cầm vòng nằm ngang, ném nhẹ tay và xoay cổ tay để vòng bay thẳng mà không bị lật. Trẻ em dưới 8 tuổi được đứng ở vạch gần hơn để chơi dễ hơn.', N'approved'),
+  (N'stall', N'G1', N'description', N'en', N'Ring toss is a classic fairground game of skill that anyone can play, from young children to adults. For 20,000 VND you get 5 rattan rings and stand behind a line about 2 metres from the rows of bottles. Throw the rings one at a time, and a ring only counts if it drops fully over a bottle neck and stays around the bottle. Bottles in the front rows win small prizes such as sweets and key rings, while bottles at the back or with a yellow bow win bigger prizes. A useful tip is to hold the ring flat, throw gently and flick your wrist so it flies level without flipping. Children under 8 may stand at a closer line to make it easier.', N'approved'),
   (N'stall', N'G1', N'price', N'vi', N'20.000đ / 5 vòng', N'approved'),
   (N'stall', N'G1', N'price', N'en', N'20,000 VND / 5 rings', N'approved'),
   (N'stall', N'G2', N'name', N'vi', N'Bịt mắt đập niêu', N'approved'),
@@ -297,8 +309,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G2', N'name', N'ko', N'눈 가리고 항아리 깨기', N'approved'),
   (N'stall', N'G2', N'name', N'ja', N'目隠しつぼ割り', N'approved'),
   (N'stall', N'G2', N'name', N'de', N'Topfschlagen mit verbundenen Augen', N'approved'),
-  (N'stall', N'G2', N'description', N'vi', N'Bịt mắt, nghe người cổ vũ chỉ đường để đập niêu.', N'approved'),
-  (N'stall', N'G2', N'description', N'en', N'Blindfolded, follow the crowd’s shouts to smash the clay pot.', N'approved'),
+  (N'stall', N'G2', N'description', N'vi', N'Bịt mắt đập niêu là trò chơi dân gian thường thấy trong các hội làng ngày xuân, vui nhất khi có đông người cổ vũ. Một chiếc niêu đất nhỏ được treo trên dây ngang tầm vai, bên trong có quà bất ngờ như kẹo hoặc đồ chơi nhỏ. Mỗi lượt 15.000 đồng, người chơi được bịt mắt bằng khăn, xoay ba vòng tại chỗ rồi cầm một cây gậy tre bước về phía niêu. Bạn bè đứng ngoài hô chỉ đường như sang trái, sang phải, tiến lên, nhưng đôi khi họ cố tình chỉ sai để trò chơi thêm vui. Mỗi người chỉ được vung gậy ba lần, đập vỡ niêu thì được nhận phần quà bên trong. Để an toàn, người xem phải đứng ngoài vòng dây và chỉ người chơi mới được vào khu đập niêu.', N'approved'),
+  (N'stall', N'G2', N'description', N'en', N'Blindfolded pot smashing is a folk game often played at spring village festivals, and it is most fun with a big crowd cheering. A small clay pot hangs from a rope at shoulder height, with a surprise inside such as sweets or a small toy. For 15,000 VND a turn, the player is blindfolded with a scarf, spun around three times, then given a bamboo stick to walk towards the pot. Friends outside shout directions like left, right or forward, though sometimes they point the wrong way on purpose to make it funnier. Each player gets only three swings, and whoever breaks the pot keeps the prize inside. For safety, spectators must stay outside the rope, and only the player may enter the smashing area.', N'approved'),
   (N'stall', N'G2', N'price', N'vi', N'15.000đ / lượt', N'approved'),
   (N'stall', N'G2', N'price', N'en', N'15,000 VND / turn', N'approved'),
   (N'stall', N'G3', N'name', N'vi', N'Kéo co', N'approved'),
@@ -307,8 +319,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G3', N'name', N'ko', N'줄다리기', N'approved'),
   (N'stall', N'G3', N'name', N'ja', N'綱引き', N'approved'),
   (N'stall', N'G3', N'name', N'de', N'Tauziehen', N'approved'),
-  (N'stall', N'G3', N'description', N'vi', N'Đội 5 người, thi vào đầu mỗi giờ.', N'approved'),
-  (N'stall', N'G3', N'description', N'en', N'Teams of 5, matches at the top of every hour.', N'approved'),
+  (N'stall', N'G3', N'description', N'vi', N'Kéo co là trò chơi đồng đội dân gian thể hiện sức mạnh và tinh thần đoàn kết, đã được UNESCO ghi danh là di sản văn hóa phi vật thể. Mỗi đội có 5 người, bạn có thể đi cùng bạn bè hoặc đăng ký lẻ tại gian để được ghép đội, hoàn toàn miễn phí. Các trận đấu bắt đầu vào đầu mỗi giờ, vì vậy hãy đăng ký trước khoảng 10 phút. Hai đội đứng hai bên vạch giữa, chính giữa sợi dây có buộc một dải vải đỏ, khi trọng tài thổi còi thì đội nào kéo được dải vải đỏ qua vạch về phía mình sẽ thắng hiệp đó. Mỗi trận có ba hiệp, đội thắng hai hiệp trước là đội thắng chung cuộc và nhận quà của ban tổ chức. Mẹo để thắng là hạ thấp người, ngả ra sau, bám chân thật chắc và cả đội kéo theo cùng một nhịp hô.', N'approved'),
+  (N'stall', N'G3', N'description', N'en', N'Tug of war is a folk team game of strength and unity, and it is listed by UNESCO as intangible cultural heritage. Each team has 5 players, and you can come with friends or sign up alone at the stall to join a team, completely free. Matches start at the top of every hour, so sign up about 10 minutes early. The two teams stand on either side of the centre line with a red ribbon tied to the middle of the rope, and when the referee blows the whistle, the team that pulls the ribbon over the line to its side wins the round. Each match has three rounds, and the first team to win two takes the match and a prize from the organisers. To win, stay low, lean back, plant your feet firmly and pull together to one shared rhythm.', N'approved'),
   (N'stall', N'G3', N'price', N'vi', N'Miễn phí', N'approved'),
   (N'stall', N'G3', N'price', N'en', N'Free', N'approved'),
   (N'stall', N'G4', N'name', N'vi', N'Nhảy bao bố', N'approved'),
@@ -317,8 +329,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G4', N'name', N'ko', N'자루 달리기', N'approved'),
   (N'stall', N'G4', N'name', N'ja', N'袋跳び競走', N'approved'),
   (N'stall', N'G4', N'name', N'de', N'Sackhüpfen', N'approved'),
-  (N'stall', N'G4', N'description', N'vi', N'Đua nhảy bao bố 20 m, 4 người một lượt.', N'approved'),
-  (N'stall', N'G4', N'description', N'en', N'A 20 m sack race, 4 players per round.', N'approved'),
+  (N'stall', N'G4', N'description', N'vi', N'Nhảy bao bố là trò chơi vận động vui nhộn đã gắn với tuổi thơ của nhiều thế hệ người Việt. Mỗi lượt có 4 người cùng thi trên đường đua dài 20 mét, miễn phí cho mọi lứa tuổi. Bạn cho hai chân vào bao, kéo miệng bao lên ngang hông và dùng hai tay giữ chặt. Khi có hiệu lệnh, bạn bật nhảy bằng cả hai chân về phía trước, không được chạy hay bước ra khỏi bao. Nếu bị ngã, bạn chỉ cần đứng dậy và nhảy tiếp từ chỗ ngã, ai chạm vạch đích đầu tiên sẽ thắng và nhận quà. Bạn nên mang giày đế bằng và nhảy những bước ngắn, đều để giữ thăng bằng tốt hơn.', N'approved'),
+  (N'stall', N'G4', N'description', N'en', N'The sack race is a lively game that has been part of childhood for generations of Vietnamese people. Four players race at a time along a 20 metre track, and it is free for all ages. Step into the sack with both feet, pull the top up to your waist and hold it tightly with both hands. On the signal, jump forward with both feet together, with no running and no stepping out of the sack. If you fall, just get up and keep jumping from where you fell, and the first to reach the finish line wins a prize. Wear flat shoes and take short, steady jumps to keep your balance.', N'approved'),
   (N'stall', N'G4', N'price', N'vi', N'Miễn phí', N'approved'),
   (N'stall', N'G4', N'price', N'en', N'Free', N'approved'),
   (N'stall', N'G5', N'name', N'vi', N'Ô ăn quan', N'approved'),
@@ -327,8 +339,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G5', N'name', N'ko', N'오안꽌 보드게임', N'approved'),
   (N'stall', N'G5', N'name', N'ja', N'オアンクアン（ボードゲーム）', N'approved'),
   (N'stall', N'G5', N'name', N'de', N'Brettspiel O an quan', N'approved'),
-  (N'stall', N'G5', N'description', N'vi', N'Trò chơi chiến thuật dân gian, có người hướng dẫn luật.', N'approved'),
-  (N'stall', N'G5', N'description', N'en', N'A folk strategy game, with a guide to explain the rules.', N'approved'),
+  (N'stall', N'G5', N'description', N'vi', N'Ô ăn quan là trò chơi chiến thuật dân gian dành cho hai người, rèn luyện khả năng tính toán và đoán trước nước đi. Bàn chơi có 10 ô dân chia đều cho hai bên, mỗi ô có 5 viên sỏi, cùng 2 ô quan hình bán nguyệt ở hai đầu, mỗi ô có một viên quan lớn. Đến lượt, bạn chọn một ô dân bên mình, bốc hết sỏi và rải lần lượt mỗi ô một viên theo chiều bạn muốn. Rải hết sỏi, nếu ô kế tiếp còn sỏi thì bạn bốc lên rải tiếp, còn nếu ô kế tiếp trống và ô sau đó có sỏi thì bạn được ăn hết số sỏi ở ô đó. Ván chơi kết thúc khi cả hai ô quan đều đã bị ăn, ai có nhiều sỏi hơn sẽ thắng, mỗi viên quan được tính bằng 10 viên dân. Gian chơi miễn phí và luôn có người hướng dẫn luật cho người mới, mỗi ván kéo dài khoảng 15 đến 20 phút.', N'approved'),
+  (N'stall', N'G5', N'description', N'en', N'O an quan is a folk strategy game for two players that trains counting and thinking ahead. The board has 10 small squares split between the two sides, each holding 5 pebbles, plus 2 half moon mandarin squares at the ends, each holding one large mandarin stone. On your turn, pick one of your squares, scoop up all its pebbles and drop them one by one into the following squares in the direction you choose. When your hand is empty, if the next square has pebbles you pick them up and keep sowing, but if the next square is empty and the one after it has pebbles, you capture all of them. The game ends when both mandarin squares have been captured, and the player with more pebbles wins, with each mandarin stone worth 10 pebbles. Playing is free, a guide is always there to teach beginners, and a game takes about 15 to 20 minutes.', N'approved'),
   (N'stall', N'G5', N'price', N'vi', N'Miễn phí', N'approved'),
   (N'stall', N'G5', N'price', N'en', N'Free', N'approved'),
   (N'stall', N'G6', N'name', N'vi', N'Ném lon trúng thưởng', N'approved'),
@@ -337,8 +349,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G6', N'name', N'ko', N'캔 쓰러뜨리기', N'approved'),
   (N'stall', N'G6', N'name', N'ja', N'缶倒しゲーム', N'approved'),
   (N'stall', N'G6', N'name', N'de', N'Dosenwerfen', N'approved'),
-  (N'stall', N'G6', N'description', N'vi', N'Ném bóng làm đổ tháp lon để nhận quà.', N'approved'),
-  (N'stall', N'G6', N'description', N'en', N'Knock down the can tower with a ball to win.', N'approved'),
+  (N'stall', N'G6', N'description', N'vi', N'Ném lon trúng thưởng là trò chơi thử độ chính xác và lực tay, rất được các bạn trẻ yêu thích. Mỗi lượt 20.000 đồng, bạn nhận 3 quả bóng vải và đứng sau vạch cách bàn khoảng 3 mét. Trên bàn có 10 vỏ lon xếp thành hình tháp, hàng dưới cùng 4 lon, tiếp theo là 3 lon, 2 lon và 1 lon trên đỉnh. Bạn phải làm rơi toàn bộ lon xuống khỏi mặt bàn, lon bị đổ nhưng vẫn nằm trên bàn thì chưa được tính. Làm rơi hết tháp chỉ bằng một quả bóng sẽ nhận quà lớn, còn dùng hai hoặc ba quả thì nhận quà nhỏ. Mẹo là ném mạnh vào giữa hàng dưới cùng, vì khi chân tháp vỡ thì cả tháp sẽ đổ theo.', N'approved'),
+  (N'stall', N'G6', N'description', N'en', N'Can knockdown is a game of aim and throwing power that is very popular with young people. For 20,000 VND you get 3 cloth balls and stand behind a line about 3 metres from the table. On the table, 10 empty cans are stacked into a pyramid, with 4 on the bottom row, then 3, then 2 and 1 on top. You must knock every can off the table, and a can that falls over but stays on the table does not count. Clearing the whole pyramid with one ball wins a big prize, while using two or three balls wins a small one. The trick is to throw hard at the middle of the bottom row, because once the base breaks, the whole tower comes down.', N'approved'),
   (N'stall', N'G6', N'price', N'vi', N'20.000đ / 3 bóng', N'approved'),
   (N'stall', N'G6', N'price', N'en', N'20,000 VND / 3 balls', N'approved'),
   (N'stall', N'G7', N'name', N'vi', N'Câu cá mini cho bé', N'approved'),
@@ -347,8 +359,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'G7', N'name', N'ko', N'어린이 미니 낚시', N'approved'),
   (N'stall', N'G7', N'name', N'ja', N'子ども用ミニ釣り', N'approved'),
   (N'stall', N'G7', N'name', N'de', N'Mini-Angeln für Kinder', N'approved'),
-  (N'stall', N'G7', N'description', N'vi', N'Hồ câu cá đồ chơi cho trẻ dưới 10 tuổi.', N'approved'),
-  (N'stall', N'G7', N'description', N'en', N'A toy fishing pond for children under 10.', N'approved'),
+  (N'stall', N'G7', N'description', N'vi', N'Câu cá mini là góc chơi riêng dành cho các bé dưới 10 tuổi, nằm ở cuối Sân chơi Trăng Vàng. Hồ câu là một bể nước nông chỉ khoảng 20 cm, thả nhiều chú cá nhựa đủ màu sắc có gắn nam châm ở miệng. Mỗi lượt 25.000 đồng cho 10 phút, bé được phát một cần câu nhỏ có nam châm ở đầu dây và một chiếc xô để đựng cá. Bé thả dây cho nam châm chạm vào miệng cá, khi cá dính thì nhẹ nhàng nhấc lên và bỏ vào xô. Hết giờ, nhân viên đếm điểm, mỗi cá thường được 1 điểm, cá vàng được 3 điểm, và bé nào cũng được nhận quà theo số điểm. Phụ huynh có thể đứng cạnh hồ để giúp bé, gần đó có ghế ngồi và khăn lau tay.', N'approved'),
+  (N'stall', N'G7', N'description', N'en', N'Mini fishing is a play corner just for children under 10, at the far end of the Golden Moon Playground. The pond is a shallow tank only about 20 cm deep, filled with colourful plastic fish that have magnets in their mouths. For 25,000 VND for 10 minutes, each child gets a small rod with a magnet on the end of the line and a bucket for the catch. Lower the line until the magnet touches a fish mouth, then gently lift the fish out and drop it into the bucket. When time is up, staff count the points, with most fish worth 1 point and golden fish worth 3, and every child gets a prize based on the score. Parents can stand beside the pond to help, and there are seats and hand towels nearby.', N'approved'),
   (N'stall', N'G7', N'price', N'vi', N'25.000đ / 10 phút', N'approved'),
   (N'stall', N'G7', N'price', N'en', N'25,000 VND / 10 min', N'approved'),
   (N'stall', N'T1', N'name', N'vi', N'Xưởng làm đèn lồng', N'approved'),
@@ -357,8 +369,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'T1', N'name', N'ko', N'등불 만들기 공방', N'approved'),
   (N'stall', N'T1', N'name', N'ja', N'提灯づくり工房', N'approved'),
   (N'stall', N'T1', N'name', N'de', N'Laternen-Werkstatt', N'approved'),
-  (N'stall', N'T1', N'description', N'vi', N'Tự làm đèn lồng giấy trong 30 phút và mang về.', N'approved'),
-  (N'stall', N'T1', N'description', N'en', N'Make a paper lantern in 30 minutes and take it home.', N'approved'),
+  (N'stall', N'T1', N'description', N'vi', N'Tại xưởng làm đèn lồng, bạn sẽ tự tay làm một chiếc đèn trong khoảng 30 phút và mang về làm kỷ niệm. Mỗi người được phát một bộ nguyên liệu gồm nan tre đã vót sẵn, dây kẽm mềm, giấy bóng kính nhiều màu, keo dán và một bóng đèn LED nhỏ. Đầu tiên, bạn uốn các nan tre thành khung theo mẫu đèn ông sao năm cánh hoặc đèn lồng tròn, rồi cố định các khớp bằng dây kẽm. Tiếp theo, bạn quét keo lên khung, dán giấy bóng kính kín từng mặt rồi cắt bỏ phần giấy thừa. Sau đó, bạn trang trí thêm tua giấy, hoa văn và gắn đèn LED cùng cán cầm bằng tre ở phía dưới. Nghệ nhân hướng dẫn từng bước nên người mới cũng làm được, trẻ nhỏ nên đi cùng người lớn để được giúp khi uốn khung.', N'approved'),
+  (N'stall', N'T1', N'description', N'en', N'At the lantern workshop you make your own lantern in about 30 minutes and take it home as a keepsake. Everyone gets a kit with pre-cut bamboo strips, soft wire, coloured cellophane, glue and a small LED light. First, bend the bamboo strips into a frame for a five pointed star lantern or a round lantern, and fix each joint with wire. Next, brush glue onto the frame, cover each side with cellophane and trim off the extra paper. Then decorate it with paper tassels and patterns, and attach the LED light and a bamboo handle underneath. An artisan guides you through every step so beginners can do it too, and young children should come with an adult for help with the frame.', N'approved'),
   (N'stall', N'T1', N'price', N'vi', N'50.000đ / người', N'approved'),
   (N'stall', N'T1', N'price', N'en', N'50,000 VND / person', N'approved'),
   (N'stall', N'T2', N'name', N'vi', N'In tranh Đông Hồ', N'approved'),
@@ -367,8 +379,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'T2', N'name', N'ko', N'동호 목판화', N'approved'),
   (N'stall', N'T2', N'name', N'ja', N'ドンホー版画', N'approved'),
   (N'stall', N'T2', N'name', N'de', N'Dong-Ho-Holzdruck', N'approved'),
-  (N'stall', N'T2', N'description', N'vi', N'In tranh dân gian bằng khuôn gỗ và màu tự nhiên.', N'approved'),
-  (N'stall', N'T2', N'description', N'en', N'Print a folk painting with wooden blocks and natural colours.', N'approved'),
+  (N'stall', N'T2', N'description', N'vi', N'Tranh Đông Hồ là dòng tranh dân gian nổi tiếng của làng Đông Hồ, Bắc Ninh, với những mẫu quen thuộc như Đám cưới chuột, Lợn đàn hay Gà mái. Tranh được in trên giấy điệp, làm từ vỏ cây dó và quét một lớp bột vỏ sò điệp nghiền mịn nên mặt giấy lấp lánh. Màu in đều lấy từ thiên nhiên, màu đen từ than lá tre, màu đỏ từ sỏi son, màu vàng từ hoa hòe và màu xanh từ lá chàm. Mỗi màu có một bản khắc gỗ riêng, bạn quét màu lên khuôn, đặt giấy lên rồi dùng xơ mướp xoa đều để màu bám vào giấy. Các màu được in lần lượt từng lớp, nét đen in sau cùng để tạo đường viền rõ ràng cho bức tranh. Tranh được phơi khô khoảng 10 phút rồi cuộn vào ống giấy để bạn mang về, giá 40.000 đồng mỗi tranh.', N'approved'),
+  (N'stall', N'T2', N'description', N'en', N'Dong Ho prints are a famous folk art from Dong Ho village in Bac Ninh, with well known designs such as the Mouse Wedding, the Pig Family and the Hen. They are printed on diep paper, made from the bark of the do tree and coated with finely ground scallop shell, which makes the surface shimmer. All the colours come from nature, with black from bamboo leaf charcoal, red from red ochre gravel, yellow from pagoda tree flowers and blue from indigo leaves. Each colour has its own carved wooden block, so you brush the colour onto the block, lay the paper on top and rub it evenly with a loofah so the colour sticks. The colours are printed one layer at a time, and the black lines go on last to give the picture its clear outline. The print dries for about 10 minutes and is then rolled into a paper tube for you to take home, for 40,000 VND each.', N'approved'),
   (N'stall', N'T2', N'price', N'vi', N'40.000đ / tranh', N'approved'),
   (N'stall', N'T2', N'price', N'en', N'40,000 VND / print', N'approved'),
   (N'stall', N'T3', N'name', N'vi', N'Cổng ảnh Lá Vàng', N'approved'),
@@ -377,8 +389,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'T3', N'name', N'ko', N'황금잎 포토존', N'approved'),
   (N'stall', N'T3', N'name', N'ja', N'金色の葉のフォトゲート', N'approved'),
   (N'stall', N'T3', N'name', N'de', N'Fototor Goldenes Blatt', N'approved'),
-  (N'stall', N'T3', N'description', N'vi', N'Góc chụp ảnh với cổng lá phong, in ảnh lấy liền.', N'approved'),
-  (N'stall', N'T3', N'description', N'en', N'A maple leaf photo arch with instant prints.', N'approved'),
+  (N'stall', N'T3', N'description', N'vi', N'Cổng ảnh Lá Vàng là góc chụp ảnh nổi bật nhất của lễ hội và miễn phí cho tất cả mọi người. Cổng được dựng từ khung tre uốn vòm cao hơn ba mét, kết hàng nghìn chiếc lá phong vải màu đỏ, cam và vàng xen với lá khô thật. Bên trong vòm có dây đèn LED ánh vàng, nên buổi tối cổng sáng lung linh và mang không khí rất khác ban ngày. Bạn xếp hàng chờ đến lượt, mỗi nhóm có khoảng hai phút để tạo dáng, nhân viên có thể chụp giúp bằng điện thoại của bạn. Nếu muốn lấy ảnh giấy, bạn chụp bằng máy của gian và nhận ảnh in khổ 10x15 sau khoảng hai phút, giá 30.000 đồng một tấm. Thời điểm đẹp nhất để chụp là cuối chiều từ 16 đến 17 giờ khi nắng dịu, hoặc sau 18 giờ khi đèn đã bật.', N'approved'),
+  (N'stall', N'T3', N'description', N'en', N'The Golden Leaf photo arch is the most eye catching photo spot of the festival, and it is free for everyone. The arch is built from bent bamboo over three metres high, covered with thousands of red, orange and yellow fabric maple leaves mixed with real dried leaves. Strings of warm yellow LED lights run inside the arch, so in the evening it glows and feels very different from the daytime. Queue for your turn, and each group gets about two minutes to pose, with staff happy to take the photo on your own phone. If you want a printed copy, have it taken with the stall camera and collect a 10x15 print about two minutes later, for 30,000 VND each. The best times are late afternoon from 4 to 5 pm when the light is soft, or after 6 pm once the lights are on.', N'approved'),
   (N'stall', N'T3', N'price', N'vi', N'Miễn phí, in ảnh 30.000đ', N'approved'),
   (N'stall', N'T3', N'price', N'en', N'Free, prints 30,000 VND', N'approved'),
   (N'stall', N'T4', N'name', N'vi', N'Quầy lưu niệm và đổi tem', N'approved'),
@@ -387,8 +399,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'stall', N'T4', N'name', N'ko', N'기념품·스탬프 교환', N'approved'),
   (N'stall', N'T4', N'name', N'ja', N'お土産とスタンプ交換', N'approved'),
   (N'stall', N'T4', N'name', N'de', N'Souvenirs und Stempeltausch', N'approved'),
-  (N'stall', N'T4', N'description', N'vi', N'Bán đồ lưu niệm và đổi tem săn được lấy quà.', N'approved'),
-  (N'stall', N'T4', N'description', N'en', N'Souvenirs, and the place to swap your stamps for a gift.', N'approved'),
+  (N'stall', N'T4', N'description', N'vi', N'Quầy lưu niệm và đổi tem là điểm dừng chân cuối cùng trên hành trình khám phá lễ hội. Đồ lưu niệm ở đây đều do nghệ nhân làm thủ công, như móc khóa đèn ông sao, bưu thiếp in tranh Đông Hồ, mặt nạ giấy bồi và túi cói, giá từ 20.000 đồng. Mặt nạ giấy bồi được làm bằng cách dán nhiều lớp giấy dó lên khuôn đất sét, phơi khô, gỡ ra rồi vẽ màu hoàn toàn bằng tay. Móc khóa đèn ông sao được làm từ nan tre nhỏ và giấy bóng kính giống như đèn lồng ở xưởng T1, chỉ thu nhỏ lại. Mỗi khi quét mã QR ở một gian hàng, bạn nhận được một tem trong mục Săn tem trên điện thoại. Đủ 8 tem, bạn đưa màn hình cho nhân viên quầy để đổi lấy một chiếc đèn lồng mini miễn phí.', N'approved'),
+  (N'stall', N'T4', N'description', N'en', N'The souvenir and stamp counter is the last stop on your journey around the festival. All the souvenirs are handmade by artisans, including star lantern key rings, Dong Ho print postcards, papier mache masks and sedge bags, from 20,000 VND. The papier mache masks are made by layering do paper over a clay mould, drying it, lifting it off and painting it entirely by hand. The star lantern key rings use thin bamboo strips and cellophane just like the lanterns at workshop T1, only much smaller. Every time you scan the QR code at a stall, you get a stamp in the Stamps section on your phone. Once you have 8 stamps, show your screen to the staff here to get a free mini lantern.', N'approved'),
   (N'stall', N'T4', N'price', N'vi', N'Từ 20.000đ', N'approved'),
   (N'stall', N'T4', N'price', N'en', N'From 20,000 VND', N'approved'),
   (N'show', N'S1', N'name', N'vi', N'Múa lân khai hội', N'approved'),
@@ -425,6 +437,8 @@ INSERT INTO translations (entity, entity_id, field, lang, text, status) VALUES
   (N'show', N'S4', N'description', N'en', N'Acoustic music, ending with a lantern parade around the lake.', N'approved');
 GO
 
+/* Bản dịch tiếng Trung, Hàn, Nhật, Đức cho thuyết minh khu, mô tả / giá / dị ứng của gian và mô tả suất diễn.
+   Chỉ thêm bản còn thiếu, bản đã có (kể cả bản đã sửa trên web quản trị) giữ nguyên. */
 MERGE translations AS t
 USING (VALUES
   (N'zone', N'A', N'narration', N'zh', N'欢迎来到秋香街，这是有5个摊位的美食区。千万别错过绿村的青米片，这是河内秋天的代表味道，还有现场手工制作的月饼。每个摊位都有二维码，扫码即可收听菜品介绍并查看过敏原。'),
@@ -676,6 +690,8 @@ INSERT INTO announcements (text_vi, active) VALUES
   (N'Chương trình biểu diễn tối nay dời sang 19:45 do mưa.', 0);
 GO
 
+/* Tài khoản để API Node đăng nhập SQL Server (khớp DB_USER / DB_PASSWORD trong apps/api/.env).
+   Chỉ được đọc / ghi dữ liệu, không được xoá bảng. */
 USE master;
 IF NOT EXISTS (SELECT 1 FROM sys.server_principals WHERE name = 'mtll_app')
   CREATE LOGIN mtll_app WITH PASSWORD = 'MuaThu@2026', CHECK_POLICY = OFF, DEFAULT_DATABASE = MuaThuLongLay;
