@@ -143,11 +143,11 @@ export const festival: Festival = {
         de: 'Handgemachte Mondkuchen',
       },
       description: {
-        vi: 'Bánh nướng, bánh dẻo nhân sen, đậu xanh, thập cẩm, làm tại chỗ.',
-        en: 'Baked and snowskin mooncakes with lotus, mung bean or mixed nuts, made on site.',
+        vi: 'Bánh trung thu ở gian này được làm thủ công ngay tại chỗ theo công thức truyền thống, gồm hai loại là bánh nướng và bánh dẻo. Vỏ bánh nướng làm từ bột mì, nước đường thắng sẵn, dầu ăn và một chút nước tro, sau đó phết lòng đỏ trứng và nướng hai lần để có màu vàng nâu bóng đẹp. Vỏ bánh dẻo làm từ bột nếp rang trộn với nước đường và nước hoa bưởi, không cần nướng nên ăn mềm, dẻo và thơm mát. Nhân bánh có ba vị: hạt sen sên đường bùi ngọt, đậu xanh xay nhuyễn mịn, và thập cẩm gồm hạt điều, hạt dưa, mè, lạp xưởng, mứt bí và lá chanh thái sợi. Mỗi chiếc bánh được nặn tay rồi ép khuôn gỗ ngay trước mặt bạn, nên bạn có thể đứng xem từng công đoạn. Bánh nướng ngon nhất khi để thêm một đến hai ngày cho vỏ mềm lại và ngấm dầu.',
+        en: 'These mooncakes are handmade on site using a traditional recipe, in two styles: baked and snowskin. The baked crust is made from wheat flour, aged sugar syrup, oil and a little lye water, then brushed with egg yolk and baked twice for a glossy golden brown finish. The snowskin crust is made from roasted glutinous rice flour mixed with syrup and grapefruit flower water, so it is never baked and stays soft, chewy and fragrant. There are three fillings: sweet lotus seed paste, smooth mung bean, and a mixed filling of cashews, melon seeds, sesame, Chinese sausage, candied winter melon and shredded lime leaves. Each cake is shaped by hand and pressed in a wooden mould right in front of you, so you can watch every step. Baked mooncakes taste best after resting for one or two days, when the crust softens and turns slightly oily.',
       },
       price: { vi: '35.000–60.000đ', en: '35,000–60,000 VND' },
-      allergens: { vi: 'trứng, gluten, các loại hạt', en: 'egg, gluten, nuts' },
+      allergens: { vi: 'trứng, gluten, các loại hạt, mè', en: 'egg, gluten, nuts, sesame' },
     },
     {
       id: 'F2',
@@ -163,8 +163,8 @@ export const festival: Festival = {
         de: 'Grüner Reis aus dem Dorf Vong',
       },
       description: {
-        vi: 'Cốm tươi gói lá sen, chè cốm, xôi cốm.',
-        en: 'Fresh green rice flakes in lotus leaves, sweet soup and sticky rice.',
+        vi: 'Cốm ở gian này được mang về từ làng Vòng, Hà Nội, nơi làm cốm nổi tiếng nhất mỗi độ thu sang. Nguyên liệu là lúa nếp cái hoa vàng gặt khi hạt còn non và đang chắc sữa, nên cốm có màu xanh tự nhiên và mùi thơm rất riêng. Thóc được rang trên chảo gang, giã bằng chày trong cối đá rồi sàng sảy nhiều lượt, lặp lại cho đến khi hạt cốm dẹt, mỏng và dẻo. Cốm tươi được gói trong lá sen để giữ ẩm và thêm hương sen, bạn có thể ăn ngay từng nhúm nhỏ. Chè cốm được nấu từ cốm, đường và bột sắn dây cho sánh mịn, rồi thêm vài giọt nước hoa bưởi cho thơm. Xôi cốm đồ chung với đậu xanh đánh nhuyễn, dẻo thơm, ăn kèm chuối tiêu hoặc hồng chín là ngon nhất.',
+        en: 'These green rice flakes come from Vong village in Hanoi, the most famous place for com every autumn. They are made from young yellow flower glutinous rice, harvested while the grains are still milky, which gives com its natural green colour and unique fragrance. The grains are roasted in a cast iron pan, pounded in a stone mortar and winnowed again and again until the flakes are flat, thin and soft. Fresh com is wrapped in lotus leaves to keep it moist and add a light lotus scent, and you can eat it straight away, a pinch at a time. Com sweet soup is cooked with sugar and arrowroot starch until smooth, then finished with a few drops of grapefruit flower water. Com sticky rice is steamed with mashed mung beans and tastes best with ripe bananas or persimmons.',
       },
       price: { vi: '30.000–50.000đ', en: '30,000–50,000 VND' },
       allergens: { vi: 'không có', en: 'none' },
@@ -183,11 +183,11 @@ export const festival: Festival = {
         de: 'Mekong-Pfannkuchen',
       },
       description: {
-        vi: 'Vỏ giòn nghệ, nhân tôm thịt, ăn kèm rau rừng.',
-        en: 'Crispy turmeric crepes with shrimp and pork, served with wild greens.',
+        vi: 'Bánh xèo miền Tây ở đây được đổ to bằng cả mặt chảo, vỏ mỏng, giòn rụm và vàng ươm. Bột bánh pha từ bột gạo xay, nước cốt dừa, bột nghệ và hành lá cắt nhỏ, để nghỉ vài tiếng cho bột ngấm đều. Nhân bánh gồm tôm tươi, thịt ba chỉ thái mỏng, giá đỗ và củ sắn thái sợi, được xào sơ trước khi cho vào bánh. Khi chảo gang thật nóng, đầu bếp tráng một lớp dầu, rót bột rồi láng thật mỏng, tiếng xèo vang lên chính là nguồn gốc tên gọi của món ăn. Bánh được đậy nắp cho chín nhân, sau đó mở ra để vỏ giòn hẳn rồi gập đôi bày ra đĩa. Bạn cuốn bánh với cải bẹ xanh, lá cách, đọt xoài cùng các loại rau rừng, rồi chấm nước mắm chua ngọt pha tỏi ớt.',
+        en: 'These Mekong Delta style crepes are as wide as the whole pan, with a thin, crispy, golden shell. The batter is made from ground rice flour, coconut milk, turmeric and chopped spring onions, and rests for a few hours before cooking. The filling is fresh shrimp, thinly sliced pork belly, bean sprouts and shredded jicama, lightly stir fried before it goes in. When the cast iron pan is very hot, the cook oils it, pours in the batter and swirls it thin, and the sizzling sound, xeo, is where the dish gets its name. The crepe is covered so the filling cooks through, then uncovered so the shell turns crisp, and finally folded in half onto the plate. Wrap it in mustard greens, wild leaves and young mango shoots, then dip it in sweet and sour fish sauce with garlic and chilli.',
       },
       price: { vi: '45.000–70.000đ', en: '45,000–70,000 VND' },
-      allergens: { vi: 'tôm', en: 'shrimp' },
+      allergens: { vi: 'tôm, cá (nước mắm), dừa', en: 'shrimp, fish (fish sauce), coconut' },
     },
     {
       id: 'F4',
@@ -203,11 +203,11 @@ export const festival: Festival = {
         de: 'Spieße vom Nachtmarkt',
       },
       description: {
-        vi: 'Xiên thịt, rau củ và hải sản nướng than, sốt sa tế.',
-        en: 'Charcoal-grilled meat, vegetable and seafood skewers with chilli sauce.',
+        vi: 'Gian xiên nướng mang không khí phố đêm Sài Gòn với bếp than hoa đỏ lửa suốt từ chiều đến tối. Thịt heo, thịt bò và thịt gà được cắt miếng vừa ăn, ướp ít nhất hai tiếng với sả, tỏi, mật ong, dầu hào và nước tương. Xiên hải sản có tôm và mực, còn xiên rau củ gồm ớt chuông, hành tây, nấm đùi gà và bắp ngọt cho ai thích ăn nhẹ. Các xiên được nướng trên than hoa, trở đều tay và phết thêm nước ướp để thịt mềm, không bị khô. Khi gần chín, đầu bếp quét một lớp sa tế tự làm từ ớt, sả và tỏi phi để tăng vị cay thơm. Bạn có thể chọn từng xiên hoặc mua phần combo, ăn kèm dưa leo, rau thơm và muối ớt chanh.',
+        en: 'This stall brings the feel of a Saigon night market, with charcoal grills glowing from afternoon until late. Pork, beef and chicken are cut into bite size pieces and marinated for at least two hours with lemongrass, garlic, honey, oyster sauce and soy sauce. Seafood skewers have shrimp and squid, while vegetable skewers carry bell peppers, onions, king oyster mushrooms and sweet corn for a lighter bite. The skewers are grilled over charcoal, turned often and brushed with more marinade so the meat stays tender and juicy. Near the end, the cook brushes on a homemade satay of chilli, lemongrass and fried garlic for a spicy, fragrant kick. You can pick single skewers or a combo, served with cucumber, fresh herbs and chilli lime salt.',
       },
       price: { vi: '25.000–60.000đ', en: '25,000–60,000 VND' },
-      allergens: { vi: 'đậu nành, hải sản', en: 'soy, seafood' },
+      allergens: { vi: 'đậu nành, gluten, hải sản (tôm, mực, dầu hào)', en: 'soy, gluten, seafood (shrimp, squid, oyster sauce)' },
     },
     {
       id: 'F5',
@@ -222,7 +222,10 @@ export const festival: Festival = {
         ja: 'もみじティーバー',
         de: 'Ahornblatt-Teebar',
       },
-      description: { vi: 'Trà sen, cà phê trứng, sữa ngô nóng.', en: 'Lotus tea, egg coffee and hot corn milk.' },
+      description: {
+        vi: 'Quầy trà Lá Phong phục vụ ba thức uống ấm áp đặc trưng của mùa thu Hà Nội. Trà sen được ướp từ trà xanh Thái Nguyên với gạo sen lấy từ những bông sen Hồ Tây, nên nước trà xanh trong và thơm dịu. Cà phê trứng làm từ lòng đỏ trứng gà đánh bông với đường và sữa đặc thành lớp kem mịn, rồi rót lên trên cà phê phin đậm đặc. Ly cà phê trứng được đặt trong bát nước nóng để giữ ấm, bạn nên khuấy nhẹ cho kem hòa với cà phê trước khi uống. Sữa ngô nóng làm từ ngô nếp tươi xay nhuyễn, lọc lấy nước rồi nấu cùng sữa tươi và một chút đường cho béo ngọt. Mọi đồ uống đều được pha theo từng ly khi bạn gọi, và quầy có thể giảm ngọt nếu bạn yêu cầu.',
+        en: 'The Maple Leaf tea bar serves three warm drinks that are typical of autumn in Hanoi. Lotus tea is Thai Nguyen green tea scented with lotus stamens from the flowers of West Lake, giving a clear green tea with a gentle fragrance. Egg coffee is made by whisking egg yolks with sugar and condensed milk into a smooth cream, which is poured over strong drip coffee. The cup sits in a bowl of hot water to stay warm, so stir it gently to blend the cream into the coffee before you drink. Hot corn milk is made from fresh sticky corn, blended, strained and simmered with fresh milk and a little sugar for a rich, sweet taste. Every drink is made to order, and you can ask for less sugar.',
+      },
       price: { vi: '25.000–45.000đ', en: '25,000–45,000 VND' },
       allergens: { vi: 'trứng, sữa', en: 'egg, milk' },
     },
@@ -232,7 +235,10 @@ export const festival: Festival = {
       kind: 'game',
       mapPos: [540, 290],
       name: { vi: 'Ném vòng cổ chai', en: 'Ring toss', zh: '套圈', ko: '고리 던지기', ja: '輪投げ', de: 'Ringwerfen' },
-      description: { vi: 'Ném vòng trúng cổ chai để nhận quà.', en: 'Land a ring on a bottle neck to win a prize.' },
+      description: {
+        vi: 'Ném vòng cổ chai là trò chơi khéo tay quen thuộc ở các hội chợ, ai cũng chơi được, từ trẻ nhỏ đến người lớn. Mỗi lượt 20.000 đồng, bạn nhận 5 chiếc vòng mây và đứng sau vạch kẻ cách hàng chai khoảng 2 mét. Bạn ném lần lượt từng vòng, vòng phải lọt hẳn qua cổ chai và nằm yên quanh thân chai mới được tính. Chai ở hàng gần có quà nhỏ như kẹo và móc khóa, còn chai ở hàng xa hoặc chai buộc nơ vàng có quà lớn hơn. Mẹo nhỏ là cầm vòng nằm ngang, ném nhẹ tay và xoay cổ tay để vòng bay thẳng mà không bị lật. Trẻ em dưới 8 tuổi được đứng ở vạch gần hơn để chơi dễ hơn.',
+        en: 'Ring toss is a classic fairground game of skill that anyone can play, from young children to adults. For 20,000 VND you get 5 rattan rings and stand behind a line about 2 metres from the rows of bottles. Throw the rings one at a time, and a ring only counts if it drops fully over a bottle neck and stays around the bottle. Bottles in the front rows win small prizes such as sweets and key rings, while bottles at the back or with a yellow bow win bigger prizes. A useful tip is to hold the ring flat, throw gently and flick your wrist so it flies level without flipping. Children under 8 may stand at a closer line to make it easier.',
+      },
       price: { vi: '20.000đ / 5 vòng', en: '20,000 VND / 5 rings' },
     },
     {
@@ -249,8 +255,8 @@ export const festival: Festival = {
         de: 'Topfschlagen mit verbundenen Augen',
       },
       description: {
-        vi: 'Bịt mắt, nghe người cổ vũ chỉ đường để đập niêu.',
-        en: 'Blindfolded, follow the crowd’s shouts to smash the clay pot.',
+        vi: 'Bịt mắt đập niêu là trò chơi dân gian thường thấy trong các hội làng ngày xuân, vui nhất khi có đông người cổ vũ. Một chiếc niêu đất nhỏ được treo trên dây ngang tầm vai, bên trong có quà bất ngờ như kẹo hoặc đồ chơi nhỏ. Mỗi lượt 15.000 đồng, người chơi được bịt mắt bằng khăn, xoay ba vòng tại chỗ rồi cầm một cây gậy tre bước về phía niêu. Bạn bè đứng ngoài hô chỉ đường như sang trái, sang phải, tiến lên, nhưng đôi khi họ cố tình chỉ sai để trò chơi thêm vui. Mỗi người chỉ được vung gậy ba lần, đập vỡ niêu thì được nhận phần quà bên trong. Để an toàn, người xem phải đứng ngoài vòng dây và chỉ người chơi mới được vào khu đập niêu.',
+        en: 'Blindfolded pot smashing is a folk game often played at spring village festivals, and it is most fun with a big crowd cheering. A small clay pot hangs from a rope at shoulder height, with a surprise inside such as sweets or a small toy. For 15,000 VND a turn, the player is blindfolded with a scarf, spun around three times, then given a bamboo stick to walk towards the pot. Friends outside shout directions like left, right or forward, though sometimes they point the wrong way on purpose to make it funnier. Each player gets only three swings, and whoever breaks the pot keeps the prize inside. For safety, spectators must stay outside the rope, and only the player may enter the smashing area.',
       },
       price: { vi: '15.000đ / lượt', en: '15,000 VND / turn' },
     },
@@ -260,7 +266,10 @@ export const festival: Festival = {
       kind: 'game',
       mapPos: [710, 290],
       name: { vi: 'Kéo co', en: 'Tug of war', zh: '拔河', ko: '줄다리기', ja: '綱引き', de: 'Tauziehen' },
-      description: { vi: 'Đội 5 người, thi vào đầu mỗi giờ.', en: 'Teams of 5, matches at the top of every hour.' },
+      description: {
+        vi: 'Kéo co là trò chơi đồng đội dân gian thể hiện sức mạnh và tinh thần đoàn kết, đã được UNESCO ghi danh là di sản văn hóa phi vật thể. Mỗi đội có 5 người, bạn có thể đi cùng bạn bè hoặc đăng ký lẻ tại gian để được ghép đội, hoàn toàn miễn phí. Các trận đấu bắt đầu vào đầu mỗi giờ, vì vậy hãy đăng ký trước khoảng 10 phút. Hai đội đứng hai bên vạch giữa, chính giữa sợi dây có buộc một dải vải đỏ, khi trọng tài thổi còi thì đội nào kéo được dải vải đỏ qua vạch về phía mình sẽ thắng hiệp đó. Mỗi trận có ba hiệp, đội thắng hai hiệp trước là đội thắng chung cuộc và nhận quà của ban tổ chức. Mẹo để thắng là hạ thấp người, ngả ra sau, bám chân thật chắc và cả đội kéo theo cùng một nhịp hô.',
+        en: 'Tug of war is a folk team game of strength and unity, and it is listed by UNESCO as intangible cultural heritage. Each team has 5 players, and you can come with friends or sign up alone at the stall to join a team, completely free. Matches start at the top of every hour, so sign up about 10 minutes early. The two teams stand on either side of the centre line with a red ribbon tied to the middle of the rope, and when the referee blows the whistle, the team that pulls the ribbon over the line to its side wins the round. Each match has three rounds, and the first team to win two takes the match and a prize from the organisers. To win, stay low, lean back, plant your feet firmly and pull together to one shared rhythm.',
+      },
       price: { vi: 'Miễn phí', en: 'Free' },
     },
     {
@@ -269,7 +278,10 @@ export const festival: Festival = {
       kind: 'game',
       mapPos: [540, 365],
       name: { vi: 'Nhảy bao bố', en: 'Sack race', zh: '袋鼠跳', ko: '자루 달리기', ja: '袋跳び競走', de: 'Sackhüpfen' },
-      description: { vi: 'Đua nhảy bao bố 20 m, 4 người một lượt.', en: 'A 20 m sack race, 4 players per round.' },
+      description: {
+        vi: 'Nhảy bao bố là trò chơi vận động vui nhộn đã gắn với tuổi thơ của nhiều thế hệ người Việt. Mỗi lượt có 4 người cùng thi trên đường đua dài 20 mét, miễn phí cho mọi lứa tuổi. Bạn cho hai chân vào bao, kéo miệng bao lên ngang hông và dùng hai tay giữ chặt. Khi có hiệu lệnh, bạn bật nhảy bằng cả hai chân về phía trước, không được chạy hay bước ra khỏi bao. Nếu bị ngã, bạn chỉ cần đứng dậy và nhảy tiếp từ chỗ ngã, ai chạm vạch đích đầu tiên sẽ thắng và nhận quà. Bạn nên mang giày đế bằng và nhảy những bước ngắn, đều để giữ thăng bằng tốt hơn.',
+        en: 'The sack race is a lively game that has been part of childhood for generations of Vietnamese people. Four players race at a time along a 20 metre track, and it is free for all ages. Step into the sack with both feet, pull the top up to your waist and hold it tightly with both hands. On the signal, jump forward with both feet together, with no running and no stepping out of the sack. If you fall, just get up and keep jumping from where you fell, and the first to reach the finish line wins a prize. Wear flat shoes and take short, steady jumps to keep your balance.',
+      },
       price: { vi: 'Miễn phí', en: 'Free' },
     },
     {
@@ -286,8 +298,8 @@ export const festival: Festival = {
         de: 'Brettspiel O an quan',
       },
       description: {
-        vi: 'Trò chơi chiến thuật dân gian, có người hướng dẫn luật.',
-        en: 'A folk strategy game, with a guide to explain the rules.',
+        vi: 'Ô ăn quan là trò chơi chiến thuật dân gian dành cho hai người, rèn luyện khả năng tính toán và đoán trước nước đi. Bàn chơi có 10 ô dân chia đều cho hai bên, mỗi ô có 5 viên sỏi, cùng 2 ô quan hình bán nguyệt ở hai đầu, mỗi ô có một viên quan lớn. Đến lượt, bạn chọn một ô dân bên mình, bốc hết sỏi và rải lần lượt mỗi ô một viên theo chiều bạn muốn. Rải hết sỏi, nếu ô kế tiếp còn sỏi thì bạn bốc lên rải tiếp, còn nếu ô kế tiếp trống và ô sau đó có sỏi thì bạn được ăn hết số sỏi ở ô đó. Ván chơi kết thúc khi cả hai ô quan đều đã bị ăn, ai có nhiều sỏi hơn sẽ thắng, mỗi viên quan được tính bằng 10 viên dân. Gian chơi miễn phí và luôn có người hướng dẫn luật cho người mới, mỗi ván kéo dài khoảng 15 đến 20 phút.',
+        en: 'O an quan is a folk strategy game for two players that trains counting and thinking ahead. The board has 10 small squares split between the two sides, each holding 5 pebbles, plus 2 half moon mandarin squares at the ends, each holding one large mandarin stone. On your turn, pick one of your squares, scoop up all its pebbles and drop them one by one into the following squares in the direction you choose. When your hand is empty, if the next square has pebbles you pick them up and keep sowing, but if the next square is empty and the one after it has pebbles, you capture all of them. The game ends when both mandarin squares have been captured, and the player with more pebbles wins, with each mandarin stone worth 10 pebbles. Playing is free, a guide is always there to teach beginners, and a game takes about 15 to 20 minutes.',
       },
       price: { vi: 'Miễn phí', en: 'Free' },
     },
@@ -297,7 +309,10 @@ export const festival: Festival = {
       kind: 'game',
       mapPos: [710, 365],
       name: { vi: 'Ném lon trúng thưởng', en: 'Can knockdown', zh: '掷罐赢奖', ko: '캔 쓰러뜨리기', ja: '缶倒しゲーム', de: 'Dosenwerfen' },
-      description: { vi: 'Ném bóng làm đổ tháp lon để nhận quà.', en: 'Knock down the can tower with a ball to win.' },
+      description: {
+        vi: 'Ném lon trúng thưởng là trò chơi thử độ chính xác và lực tay, rất được các bạn trẻ yêu thích. Mỗi lượt 20.000 đồng, bạn nhận 3 quả bóng vải và đứng sau vạch cách bàn khoảng 3 mét. Trên bàn có 10 vỏ lon xếp thành hình tháp, hàng dưới cùng 4 lon, tiếp theo là 3 lon, 2 lon và 1 lon trên đỉnh. Bạn phải làm rơi toàn bộ lon xuống khỏi mặt bàn, lon bị đổ nhưng vẫn nằm trên bàn thì chưa được tính. Làm rơi hết tháp chỉ bằng một quả bóng sẽ nhận quà lớn, còn dùng hai hoặc ba quả thì nhận quà nhỏ. Mẹo là ném mạnh vào giữa hàng dưới cùng, vì khi chân tháp vỡ thì cả tháp sẽ đổ theo.',
+        en: 'Can knockdown is a game of aim and throwing power that is very popular with young people. For 20,000 VND you get 3 cloth balls and stand behind a line about 3 metres from the table. On the table, 10 empty cans are stacked into a pyramid, with 4 on the bottom row, then 3, then 2 and 1 on top. You must knock every can off the table, and a can that falls over but stays on the table does not count. Clearing the whole pyramid with one ball wins a big prize, while using two or three balls wins a small one. The trick is to throw hard at the middle of the bottom row, because once the base breaks, the whole tower comes down.',
+      },
       price: { vi: '20.000đ / 3 bóng', en: '20,000 VND / 3 balls' },
     },
     {
@@ -313,7 +328,10 @@ export const festival: Festival = {
         ja: '子ども用ミニ釣り',
         de: 'Mini-Angeln für Kinder',
       },
-      description: { vi: 'Hồ câu cá đồ chơi cho trẻ dưới 10 tuổi.', en: 'A toy fishing pond for children under 10.' },
+      description: {
+        vi: 'Câu cá mini là góc chơi riêng dành cho các bé dưới 10 tuổi, nằm ở cuối Sân chơi Trăng Vàng. Hồ câu là một bể nước nông chỉ khoảng 20 cm, thả nhiều chú cá nhựa đủ màu sắc có gắn nam châm ở miệng. Mỗi lượt 25.000 đồng cho 10 phút, bé được phát một cần câu nhỏ có nam châm ở đầu dây và một chiếc xô để đựng cá. Bé thả dây cho nam châm chạm vào miệng cá, khi cá dính thì nhẹ nhàng nhấc lên và bỏ vào xô. Hết giờ, nhân viên đếm điểm, mỗi cá thường được 1 điểm, cá vàng được 3 điểm, và bé nào cũng được nhận quà theo số điểm. Phụ huynh có thể đứng cạnh hồ để giúp bé, gần đó có ghế ngồi và khăn lau tay.',
+        en: 'Mini fishing is a play corner just for children under 10, at the far end of the Golden Moon Playground. The pond is a shallow tank only about 20 cm deep, filled with colourful plastic fish that have magnets in their mouths. For 25,000 VND for 10 minutes, each child gets a small rod with a magnet on the end of the line and a bucket for the catch. Lower the line until the magnet touches a fish mouth, then gently lift the fish out and drop it into the bucket. When time is up, staff count the points, with most fish worth 1 point and golden fish worth 3, and every child gets a prize based on the score. Parents can stand beside the pond to help, and there are seats and hand towels nearby.',
+      },
       price: { vi: '25.000đ / 10 phút', en: '25,000 VND / 10 min' },
     },
     {
@@ -330,7 +348,10 @@ export const festival: Festival = {
         ja: '提灯づくり工房',
         de: 'Laternen-Werkstatt',
       },
-      description: { vi: 'Tự làm đèn lồng giấy trong 30 phút và mang về.', en: 'Make a paper lantern in 30 minutes and take it home.' },
+      description: {
+        vi: 'Tại xưởng làm đèn lồng, bạn sẽ tự tay làm một chiếc đèn trong khoảng 30 phút và mang về làm kỷ niệm. Mỗi người được phát một bộ nguyên liệu gồm nan tre đã vót sẵn, dây kẽm mềm, giấy bóng kính nhiều màu, keo dán và một bóng đèn LED nhỏ. Đầu tiên, bạn uốn các nan tre thành khung theo mẫu đèn ông sao năm cánh hoặc đèn lồng tròn, rồi cố định các khớp bằng dây kẽm. Tiếp theo, bạn quét keo lên khung, dán giấy bóng kính kín từng mặt rồi cắt bỏ phần giấy thừa. Sau đó, bạn trang trí thêm tua giấy, hoa văn và gắn đèn LED cùng cán cầm bằng tre ở phía dưới. Nghệ nhân hướng dẫn từng bước nên người mới cũng làm được, trẻ nhỏ nên đi cùng người lớn để được giúp khi uốn khung.',
+        en: 'At the lantern workshop you make your own lantern in about 30 minutes and take it home as a keepsake. Everyone gets a kit with pre-cut bamboo strips, soft wire, coloured cellophane, glue and a small LED light. First, bend the bamboo strips into a frame for a five pointed star lantern or a round lantern, and fix each joint with wire. Next, brush glue onto the frame, cover each side with cellophane and trim off the extra paper. Then decorate it with paper tassels and patterns, and attach the LED light and a bamboo handle underneath. An artisan guides you through every step so beginners can do it too, and young children should come with an adult for help with the frame.',
+      },
       price: { vi: '50.000đ / người', en: '50,000 VND / person' },
     },
     {
@@ -348,8 +369,8 @@ export const festival: Festival = {
         de: 'Dong-Ho-Holzdruck',
       },
       description: {
-        vi: 'In tranh dân gian bằng khuôn gỗ và màu tự nhiên.',
-        en: 'Print a folk painting with wooden blocks and natural colours.',
+        vi: 'Tranh Đông Hồ là dòng tranh dân gian nổi tiếng của làng Đông Hồ, Bắc Ninh, với những mẫu quen thuộc như Đám cưới chuột, Lợn đàn hay Gà mái. Tranh được in trên giấy điệp, làm từ vỏ cây dó và quét một lớp bột vỏ sò điệp nghiền mịn nên mặt giấy lấp lánh. Màu in đều lấy từ thiên nhiên, màu đen từ than lá tre, màu đỏ từ sỏi son, màu vàng từ hoa hòe và màu xanh từ lá chàm. Mỗi màu có một bản khắc gỗ riêng, bạn quét màu lên khuôn, đặt giấy lên rồi dùng xơ mướp xoa đều để màu bám vào giấy. Các màu được in lần lượt từng lớp, nét đen in sau cùng để tạo đường viền rõ ràng cho bức tranh. Tranh được phơi khô khoảng 10 phút rồi cuộn vào ống giấy để bạn mang về, giá 40.000 đồng mỗi tranh.',
+        en: 'Dong Ho prints are a famous folk art from Dong Ho village in Bac Ninh, with well known designs such as the Mouse Wedding, the Pig Family and the Hen. They are printed on diep paper, made from the bark of the do tree and coated with finely ground scallop shell, which makes the surface shimmer. All the colours come from nature, with black from bamboo leaf charcoal, red from red ochre gravel, yellow from pagoda tree flowers and blue from indigo leaves. Each colour has its own carved wooden block, so you brush the colour onto the block, lay the paper on top and rub it evenly with a loofah so the colour sticks. The colours are printed one layer at a time, and the black lines go on last to give the picture its clear outline. The print dries for about 10 minutes and is then rolled into a paper tube for you to take home, for 40,000 VND each.',
       },
       price: { vi: '40.000đ / tranh', en: '40,000 VND / print' },
     },
@@ -367,7 +388,10 @@ export const festival: Festival = {
         ja: '金色の葉のフォトゲート',
         de: 'Fototor Goldenes Blatt',
       },
-      description: { vi: 'Góc chụp ảnh với cổng lá phong, in ảnh lấy liền.', en: 'A maple leaf photo arch with instant prints.' },
+      description: {
+        vi: 'Cổng ảnh Lá Vàng là góc chụp ảnh nổi bật nhất của lễ hội và miễn phí cho tất cả mọi người. Cổng được dựng từ khung tre uốn vòm cao hơn ba mét, kết hàng nghìn chiếc lá phong vải màu đỏ, cam và vàng xen với lá khô thật. Bên trong vòm có dây đèn LED ánh vàng, nên buổi tối cổng sáng lung linh và mang không khí rất khác ban ngày. Bạn xếp hàng chờ đến lượt, mỗi nhóm có khoảng hai phút để tạo dáng, nhân viên có thể chụp giúp bằng điện thoại của bạn. Nếu muốn lấy ảnh giấy, bạn chụp bằng máy của gian và nhận ảnh in khổ 10x15 sau khoảng hai phút, giá 30.000 đồng một tấm. Thời điểm đẹp nhất để chụp là cuối chiều từ 16 đến 17 giờ khi nắng dịu, hoặc sau 18 giờ khi đèn đã bật.',
+        en: 'The Golden Leaf photo arch is the most eye catching photo spot of the festival, and it is free for everyone. The arch is built from bent bamboo over three metres high, covered with thousands of red, orange and yellow fabric maple leaves mixed with real dried leaves. Strings of warm yellow LED lights run inside the arch, so in the evening it glows and feels very different from the daytime. Queue for your turn, and each group gets about two minutes to pose, with staff happy to take the photo on your own phone. If you want a printed copy, have it taken with the stall camera and collect a 10x15 print about two minutes later, for 30,000 VND each. The best times are late afternoon from 4 to 5 pm when the light is soft, or after 6 pm once the lights are on.',
+      },
       price: { vi: 'Miễn phí, in ảnh 30.000đ', en: 'Free, prints 30,000 VND' },
     },
     {
@@ -384,7 +408,10 @@ export const festival: Festival = {
         ja: 'お土産とスタンプ交換',
         de: 'Souvenirs und Stempeltausch',
       },
-      description: { vi: 'Bán đồ lưu niệm và đổi tem săn được lấy quà.', en: 'Souvenirs, and the place to swap your stamps for a gift.' },
+      description: {
+        vi: 'Quầy lưu niệm và đổi tem là điểm dừng chân cuối cùng trên hành trình khám phá lễ hội. Đồ lưu niệm ở đây đều do nghệ nhân làm thủ công, như móc khóa đèn ông sao, bưu thiếp in tranh Đông Hồ, mặt nạ giấy bồi và túi cói, giá từ 20.000 đồng. Mặt nạ giấy bồi được làm bằng cách dán nhiều lớp giấy dó lên khuôn đất sét, phơi khô, gỡ ra rồi vẽ màu hoàn toàn bằng tay. Móc khóa đèn ông sao được làm từ nan tre nhỏ và giấy bóng kính giống như đèn lồng ở xưởng T1, chỉ thu nhỏ lại. Mỗi khi quét mã QR ở một gian hàng, bạn nhận được một tem trong mục Săn tem trên điện thoại. Đủ 8 tem, bạn đưa màn hình cho nhân viên quầy để đổi lấy một chiếc đèn lồng mini miễn phí.',
+        en: 'The souvenir and stamp counter is the last stop on your journey around the festival. All the souvenirs are handmade by artisans, including star lantern key rings, Dong Ho print postcards, papier mache masks and sedge bags, from 20,000 VND. The papier mache masks are made by layering do paper over a clay mould, drying it, lifting it off and painting it entirely by hand. The star lantern key rings use thin bamboo strips and cellophane just like the lanterns at workshop T1, only much smaller. Every time you scan the QR code at a stall, you get a stamp in the Stamps section on your phone. Once you have 8 stamps, show your screen to the staff here to get a free mini lantern.',
+      },
       price: { vi: 'Từ 20.000đ', en: 'From 20,000 VND' },
     },
   ],
